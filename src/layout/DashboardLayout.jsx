@@ -14,8 +14,7 @@ import useRole from "../hooks/useRole";
 
 const DashboardLayout = () => {
   const [role] = useRole();
-  console.log(role);
-  // const role = user?.role || "citizen";
+  // console.log(role);
 
   const citizenLinks = (
     <>

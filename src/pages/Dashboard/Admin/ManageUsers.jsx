@@ -7,10 +7,6 @@ import { FaUserTimes, FaUserCheck } from "react-icons/fa";
 const ManageUsers = () => {
   const queryClient = useQueryClient();
   const axiosSecure = useAxiosSecure();
-
-  // --------------------------
-  // Fetch Users
-  // --------------------------
   const { data: users, isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
@@ -19,9 +15,6 @@ const ManageUsers = () => {
     },
   });
 
-  // --------------------------
-  // Mutation for Block/Unblock
-  // --------------------------
   const toggleBlockMutation = useMutation({
     mutationFn: async ({ id, isBlocked }) => {
       const res = await axiosSecure.patch(`/users/${id}`, { isBlocked });
