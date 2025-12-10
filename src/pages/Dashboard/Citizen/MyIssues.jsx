@@ -1,52 +1,78 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Link } from "react-router";
 import { FaEdit, FaTrash, FaEye, FaMapMarkerAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
-import axios from "axios";
+
+const categories = ["Road", "Water", "Electricity", "Sanitation", "Other"]; // example categories
 
 const MyIssues = () => {
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const [editingIssue, setEditingIssue] = useState(null);
 
-  // 🔥 FIXED Query
   const { data: issues = [], isLoading } = useQuery({
     queryKey: ["issues", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `http://localhost:5000/my-issues?email=${user.email}`
-      );
+      const res = await axiosSecure.get("/issues", {
+        params: { email: user.email },
+      });
       return res.data;
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      return axios.delete(`http://localhost:5000/issues/${id}`);
+      const res = await axiosSecure.delete(`/issues/${id}/delete`);
+      return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["issues"]);
-      toast.success("Issue deleted");
+      queryClient.invalidateQueries(["issues", user?.email]);
+      toast.success("Issue deleted successfully");
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to delete issue");
     },
   });
 
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "This action cannot be undone!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
-      if (result.isConfirmed) {
-        deleteMutation.mutate(id);
-      }
+      if (result.isConfirmed) deleteMutation.mutate(id);
     });
+  };
+
+  const editMutation = useMutation({
+    mutationFn: async ({ id, data }) => {
+      const res = await axiosSecure.patch(`/issues/${id}/edit`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["issues", user?.email]);
+      toast.success("Issue updated successfully");
+      setEditingIssue(null);
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.error || "Failed to update issue");
+    },
+  });
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    editMutation.mutate({ id: editingIssue._id, data });
   };
 
   return (
@@ -56,6 +82,10 @@ const MyIssues = () => {
       {isLoading ? (
         <div className="text-center py-10">
           <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      ) : issues.length === 0 ? (
+        <div className="text-center py-20 text-gray-400">
+          You have not reported any issues yet.
         </div>
       ) : (
         <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg">
@@ -87,20 +117,22 @@ const MyIssues = () => {
                       </div>
                     </div>
                   </td>
-
                   <td>{issue.category}</td>
-
                   <td>
-                    <span className={`badge ${issue.status}`}>
+                    <span
+                      className={`badge capitalize ${
+                        issue.status === "resolved" || issue.status === "closed"
+                          ? "badge-success"
+                          : "badge-warning"
+                      }`}
+                    >
                       {issue.status}
                     </span>
                   </td>
-
                   <td>{new Date(issue.createdAt).toLocaleDateString()}</td>
-
                   <td className="flex gap-2">
                     <Link
-                      to={`/issues/${issue._id}`}
+                      to={`/issues-details/${issue._id}`}
                       className="btn btn-square btn-sm btn-ghost"
                     >
                       <FaEye />
@@ -126,24 +158,77 @@ const MyIssues = () => {
                   </td>
                 </tr>
               ))}
-
-              {issues.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="text-center py-12">
-                    No issues found
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
       )}
 
+      {/* Edit Issue Modal */}
       {editingIssue && (
-        <EditIssueModal
-          issue={editingIssue}
-          onClose={() => setEditingIssue(null)}
-        />
+        <dialog className="modal modal-open">
+          <form
+            onSubmit={handleEditSubmit}
+            className="modal-box flex flex-col gap-4"
+          >
+            <h3 className="font-bold text-lg">
+              Edit Issue: {editingIssue.title}
+            </h3>
+
+            <input
+              type="text"
+              name="title"
+              defaultValue={editingIssue.title}
+              placeholder="Title"
+              className="input input-bordered w-full"
+              required
+            />
+
+            <input
+              type="text"
+              name="location"
+              defaultValue={editingIssue.location}
+              placeholder="Location"
+              className="input input-bordered w-full"
+              required
+            />
+
+            <select
+              name="category"
+              defaultValue={editingIssue.category}
+              className="select select-bordered w-full"
+              required
+            >
+              <option value="">Select Category</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+
+            <textarea
+              name="description"
+              defaultValue={editingIssue.description}
+              placeholder="Description"
+              className="textarea textarea-bordered w-full"
+              rows={4}
+              required
+            />
+
+            <div className="modal-action">
+              <button type="submit" className="btn btn-primary">
+                Save Changes
+              </button>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setEditingIssue(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </dialog>
       )}
     </div>
   );

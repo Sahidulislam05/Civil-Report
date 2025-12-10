@@ -7,32 +7,14 @@ const StaffHome = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  // ---------------------------
-  // Fetch all issues
-  // ---------------------------
-  const { data: issues = [], isLoading } = useQuery({
+  const { data: stats = [], isLoading } = useQuery({
     queryKey: ["issues", "staff_home"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/issues");
+      const res = await axiosSecure.get("/staff/stats");
       return res.data;
     },
   });
-
-  // ---------------------------
-  // Filter only issues assigned to this staff
-  // ---------------------------
-  const myIssues = issues.filter((i) => i.assignedTo?._id === user._id);
-
-  // ---------------------------
-  // Compute stats
-  // ---------------------------
-  const stats = {
-    assigned: myIssues.length,
-    resolved: myIssues.filter(
-      (i) => i.status === "resolved" || i.status === "closed"
-    ).length,
-    today: myIssues.filter((i) => i.status === "in-progress").length,
-  };
+  console.log(stats);
 
   if (isLoading) return <span className="loading loading-spinner"></span>;
 

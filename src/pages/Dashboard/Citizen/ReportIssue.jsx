@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { imageUpload } from "../../../utils";
-import axios from "axios";
+import { useNavigate } from "react-router";
 
 const ReportIssue = () => {
-  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const {
     register,
     handleSubmit,
@@ -15,86 +15,72 @@ const ReportIssue = () => {
   } = useForm();
 
   const [uploading, setUploading] = useState(false);
+  const navigate = useNavigate();
 
-  // POST Issue Mutation
+  // Mutation to call /issues API
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (payload) =>
-      await axios.post(`http://localhost:5000/issues`, payload),
-    onSuccess: () => {
-      toast.success("Issue reported successfully!");
-    },
-    onError: () => {
-      toast.error("Failed to submit issue!");
-    },
-    retry: 2,
+    mutationFn: async (payload) => await axiosSecure.post("/issues", payload),
+    onSuccess: () => toast.success("Issue reported successfully!"),
+    onError: (err) =>
+      toast.error(err?.response?.data?.error || "Submission failed!"),
   });
 
-  // Form Submit
   const onSubmit = async (data) => {
     setUploading(true);
     try {
       const imageURL = await imageUpload(data.image[0]);
+      console.log("Uploaded Image URL:", imageURL);
 
       const issueData = {
         title: data.title,
-        email: user?.email,
         description: data.description,
         category: data.category,
         location: data.location,
         image: imageURL,
-        createdBy: {
-          uid: user?.uid,
-          name: user?.displayName,
-
-          photoURL: user?.photoURL,
-        },
-        createdAt: new Date(),
+        priority: data.priority || "normal",
       };
 
       await mutateAsync(issueData);
+      navigate("/all-issues");
     } catch (error) {
-      console.error(error);
-      toast.error("Image upload failed!");
+      console.error("Issue submission error:", error);
+      toast.error("Failed to submit issue!");
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-base-100 p-8 rounded-xl shadow-xl border mt-8">
+    <div className="max-w-2xl mx-auto p-8 bg-base-100 rounded-xl shadow-xl mt-8">
       <h2 className="text-3xl font-bold mb-6 text-primary">Report an Issue</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Title */}
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Issue Title</span>
+            <span className="label-text">Title</span>
           </label>
           <input
             type="text"
             placeholder="e.g. Broken Streetlight"
             className="input input-bordered focus:input-primary"
-            {...register("title", { required: "Title is required" })}
+            {...register("title", { required: true })}
           />
-          {errors.title && (
-            <p className="text-error text-sm">{errors.title.message}</p>
-          )}
+          {errors.title && <p className="text-error">Title is required</p>}
         </div>
 
         {/* Description */}
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Description</span>
+            <span className="label-text">Description</span>
           </label>
           <textarea
             className="textarea textarea-bordered h-28 focus:textarea-primary"
             placeholder="Describe the issue..."
-            {...register("description", {
-              required: "Description is required",
-            })}
-          ></textarea>
+            {...register("description", { required: true })}
+          />
           {errors.description && (
-            <p className="text-error text-sm">{errors.description.message}</p>
+            <p className="text-error">Description is required</p>
           )}
         </div>
 
@@ -102,7 +88,7 @@ const ReportIssue = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Category</span>
+              <span className="label-text">Category</span>
             </label>
             <select
               className="select select-bordered w-full"
@@ -119,40 +105,38 @@ const ReportIssue = () => {
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Location</span>
+              <span className="label-text">Location</span>
             </label>
             <input
               type="text"
               placeholder="Sector 10, Rd 5"
               className="input input-bordered focus:input-primary"
-              {...register("location", { required: "Location is required" })}
+              {...register("location", { required: true })}
             />
             {errors.location && (
-              <p className="text-error text-sm">{errors.location.message}</p>
+              <p className="text-error">Location is required</p>
             )}
           </div>
         </div>
 
-        {/* Image */}
+        {/* Image Upload */}
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Evidence (Photo)</span>
+            <span className="label-text">Evidence (Photo)</span>
           </label>
           <input
             type="file"
             accept="image/*"
             className="file-input file-input-bordered file-input-primary w-full"
-            {...register("image", { required: "Image is required" })}
+            {...register("image", { required: true })}
           />
-          {errors.image && (
-            <p className="text-error text-sm">{errors.image.message}</p>
-          )}
+          {errors.image && <p className="text-error">Image is required</p>}
         </div>
 
         <button
           type="submit"
+          className="btn btn-primary w-full"
           disabled={uploading || isPending}
-          className="btn btn-primary w-full text-white"
         >
           {uploading || isPending ? "Submitting..." : "Submit Report"}
         </button>

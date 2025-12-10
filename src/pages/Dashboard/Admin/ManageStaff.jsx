@@ -11,17 +11,14 @@ const ManageStaff = () => {
   const queryClient = useQueryClient();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingStaff, setEditingStaff] = useState(null); // null = add, object = edit
+  const [editingStaff, setEditingStaff] = useState(null);
 
   const { register, handleSubmit, reset } = useForm();
 
-  // ---------------------------
-  // Fetch Staff Members
-  // ---------------------------
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users");
+      const res = await axiosSecure.get("/admin/staff");
       return res.data.filter((u) => u.role === "staff");
     },
   });

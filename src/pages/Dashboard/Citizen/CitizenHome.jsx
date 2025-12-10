@@ -6,12 +6,32 @@ import {
   FaCheckCircle,
   FaMoneyBillWave,
 } from "react-icons/fa";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement);
 
 const CitizenHome = () => {
   const { user } = useAuth();
   const { data: stats, isLoading } = useDashboardStats();
 
   if (isLoading) return <p>Loading...</p>;
+
+  const chartData = {
+    labels: ["Pending", "In Progress", "Resolved"],
+    datasets: [
+      {
+        label: "Issues",
+        data: [stats.pending, stats.inProgress, stats.resolved],
+        backgroundColor: ["#fbbf24", "#0ea5e9", "#10b981"],
+      },
+    ],
+  };
 
   return (
     <div>
@@ -28,7 +48,7 @@ const CitizenHome = () => {
             <FaClipboardList />
           </div>
           <div className="stat-title">Total Reports</div>
-          <div className="stat-value text-primary">{stats?.totalReports}</div>
+          <div className="stat-value text-primary">{stats.totalIssues}</div>
         </div>
 
         <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
@@ -36,7 +56,7 @@ const CitizenHome = () => {
             <FaSpinner />
           </div>
           <div className="stat-title">Pending</div>
-          <div className="stat-value text-warning">{stats?.pending}</div>
+          <div className="stat-value text-warning">{stats.pending}</div>
         </div>
 
         <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
@@ -44,7 +64,7 @@ const CitizenHome = () => {
             <FaSpinner />
           </div>
           <div className="stat-title">In Progress</div>
-          <div className="stat-value text-info">{stats?.inProgress}</div>
+          <div className="stat-value text-info">{stats.inProgress}</div>
         </div>
 
         <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
@@ -52,7 +72,7 @@ const CitizenHome = () => {
             <FaCheckCircle />
           </div>
           <div className="stat-title">Resolved</div>
-          <div className="stat-value text-success">{stats?.resolved}</div>
+          <div className="stat-value text-success">{stats.resolved}</div>
         </div>
 
         <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
@@ -61,9 +81,13 @@ const CitizenHome = () => {
           </div>
           <div className="stat-title">Total Spent</div>
           <div className="stat-value text-secondary">
-            {stats?.totalSpent} tk
+            {stats.totalPayments} tk
           </div>
         </div>
+      </div>
+
+      <div className="w-full h-96 mt-5">
+        <Bar data={chartData} />
       </div>
     </div>
   );

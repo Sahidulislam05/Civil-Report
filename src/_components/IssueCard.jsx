@@ -22,7 +22,10 @@ const IssueCard = ({ issue }) => {
             <FaLocationDot /> {issue.location}
           </p>
           <div className="card-actions justify-end">
-            <Link to={`/all-issues/${issue._id}`} className="btn btn-primary">
+            <Link
+              to={`/issues-details/${issue._id}`}
+              className="btn btn-primary"
+            >
               View details
             </Link>
           </div>

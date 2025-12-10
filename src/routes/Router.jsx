@@ -20,6 +20,7 @@ import AdminAllIssues from "../pages/Dashboard/Admin/AdminAllIssues";
 import StaffHome from "../pages/Dashboard/Staff/StaffHome";
 import AssignedIssues from "../pages/Dashboard/Staff/AssignedIssues";
 import Contact from "../pages/Contact/Contact";
+import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
         Component: AllIssues,
       },
       {
-        path: "/all-issues/:id",
+        path: "/issues-details/:id",
         element: (
           <PrivateRoutes>
             <IssueDetails></IssueDetails>
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
     Component: Login,
   },
   {
+    path: "/payment-success",
+    element: <PaymentSuccess></PaymentSuccess>,
+  },
+  {
     path: "/dashboard",
     element: (
       <PrivateRoutes>
@@ -73,6 +78,7 @@ const router = createBrowserRouter([
         path: "citizen",
         element: <CitizenHome></CitizenHome>,
       },
+
       {
         path: "my-issues",
         element: <MyIssues></MyIssues>,

@@ -10,9 +10,6 @@ const AdminAllIssues = () => {
   const queryClient = useQueryClient();
   const [selectedIssue, setSelectedIssue] = useState(null);
 
-  // --------------------------
-  // Fetch Issues
-  // --------------------------
   const { data: issues = [], isLoading } = useQuery({
     queryKey: ["issues", "admin_all"],
     queryFn: async () => {
@@ -21,9 +18,6 @@ const AdminAllIssues = () => {
     },
   });
 
-  // --------------------------
-  // Fetch Staff Members
-  // --------------------------
   const { data: users = [] } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
@@ -32,26 +26,19 @@ const AdminAllIssues = () => {
     },
   });
 
-  // --------------------------
-  // Mutation: Assign Staff
-  // --------------------------
   const assignMutation = useMutation({
     mutationFn: async ({ issueId, staff }) => {
       const res = await axiosSecure.patch(`/issues/${issueId}`, {
         assignedTo: staff,
+        status: "assigned", // status auto update
       });
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["issues"]);
-      toast.success("Staff assigned successfully");
-      setSelectedIssue(null);
     },
   });
 
-  // --------------------------
-  // Mutation: Reject Issue
-  // --------------------------
   const rejectMutation = useMutation({
     mutationFn: async (id) => {
       const res = await axiosSecure.patch(`/issues/${id}`, {
@@ -65,9 +52,6 @@ const AdminAllIssues = () => {
     },
   });
 
-  // --------------------------
-  // Handlers
-  // --------------------------
   const handleReject = (id) => {
     Swal.fire({
       title: "Reject Issue?",
@@ -80,8 +64,23 @@ const AdminAllIssues = () => {
     });
   };
 
-  const handleAssign = (staff) => {
-    assignMutation.mutate({ issueId: selectedIssue._id, staff });
+  const handleAssign = async (issueId, staff) => {
+    try {
+      await assignMutation.mutateAsync({
+        issueId,
+        staff: {
+          _id: staff._id,
+          name: staff.name,
+          email: staff.email,
+          photoURL: staff.photoURL,
+        },
+      });
+      setSelectedIssue(null); // modal close
+      toast.success(`Assigned to ${staff.name}`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to assign staff");
+    }
   };
 
   return (
@@ -123,9 +122,9 @@ const AdminAllIssues = () => {
                   <td>
                     {issue.assignedTo ? (
                       <div className="flex items-center gap-2">
-                        <div className="avatar w-6 h-6 rounded-full">
+                        {/* <div className="avatar w-6 h-6 rounded-full">
                           <img src={issue.assignedTo.photoURL} alt="Staff" />
-                        </div>
+                        </div> */}
                         <span className="text-sm">{issue.assignedTo.name}</span>
                       </div>
                     ) : (
@@ -164,28 +163,32 @@ const AdminAllIssues = () => {
             <h3 className="font-bold text-lg mb-4">
               Assign Staff to "{selectedIssue.title}"
             </h3>
+
             <div className="flex flex-col gap-2">
               {users.map((staff) => (
-                <button
+                <div
                   key={staff._id}
-                  onClick={() =>
-                    handleAssign({
-                      _id: staff._id,
-                      name: staff.name,
-                      email: staff.email,
-                      photoURL: staff.photoURL,
-                    })
-                  }
-                  className="btn btn-outline justify-start gap-4 normal-case"
+                  className="flex justify-between items-center"
                 >
-                  <div className="avatar w-8 h-8 rounded-full">
-                    <img src={staff.photoURL} alt="Staff" />
+                  <div className="flex items-center gap-4">
+                    <div className="avatar w-8 h-8 rounded-full">
+                      <img src={staff.photoURL} alt="Staff" />
+                    </div>
+                    <span>
+                      {staff.name} ({staff.email})
+                    </span>
                   </div>
-                  {staff.name} ({staff.email})
-                </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleAssign(selectedIssue._id, staff)}
+                  >
+                    Assign
+                  </button>
+                </div>
               ))}
               {users.length === 0 && <p>No staff members found.</p>}
             </div>
+
             <div className="modal-action">
               <button className="btn" onClick={() => setSelectedIssue(null)}>
                 Cancel

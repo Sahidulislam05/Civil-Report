@@ -1,14 +1,28 @@
 import axios from "axios";
 
 export const imageUpload = async (imageData) => {
-  const formData = new FormData();
-  formData.append("image", imageData);
+  try {
+    const formData = new FormData();
+    formData.append("image", imageData);
 
-  const { data } = await axios.post(
-    `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`,
-    formData
-  );
-  return data?.data?.display_url;
+    const { data } = await axios.post(
+      `https://api.imgbb.com/1/upload?key=${
+        import.meta.env.VITE_IMGBB_API_KEY
+      }`,
+      formData
+    );
+
+    console.log("IMGBB Response:", data);
+
+    if (data?.success) {
+      return data.data.display_url;
+    } else {
+      throw new Error("Image upload failed");
+    }
+  } catch (err) {
+    console.error("Image Upload Error:", err);
+    throw err;
+  }
 };
 
 export const saveUser = async (userData) => {
