@@ -12,70 +12,70 @@ import {
   FaClipboardList,
   FaMoneyBillWave,
   FaCheckCircle,
+  FaTimesCircle,
+  FaHourglassHalf,
 } from "react-icons/fa";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const AdminHome = () => {
   const axiosSecure = useAxiosSecure();
 
-  // Get All Issues
-  const { data: issues = [] } = useQuery({
-    queryKey: ["issues"],
+  // Fetch all admin stats in a single API call
+  const {
+    data: statsData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["admin-stats"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/issues");
+      const res = await axiosSecure.get("/admin/stats");
       return res.data;
     },
   });
 
-  // Get All Users
-  const { data: users = [] } = useQuery({
-    queryKey: ["users"],
-    queryFn: async () => {
-      const res = await axiosSecure.get("/users");
-      return res.data;
-    },
-  });
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+  }
 
-  // Get All Payments
-  const { data: payments = [] } = useQuery({
-    queryKey: ["payments"],
-    queryFn: async () => {
-      const res = await axiosSecure.get("/payment");
-      return res.data;
-    },
-  });
+  if (isError) {
+    return (
+      <div className="text-center text-red-500 py-20">
+        Failed to load dashboard stats.
+      </div>
+    );
+  }
 
   // --------------------------
-  // Stats Calculation
+  // Stats Cards
   // --------------------------
   const stats = {
-    totalIssues: issues.length,
-    resolved: issues.filter((i) => i.status === "resolved").length,
-    pending: issues.filter((i) => i.status === "pending").length,
-    inProgress: issues.filter((i) => i.status === "in-progress").length,
-    payments: payments.reduce((sum, p) => sum + (p.amount || 0), 0),
-    users: users.length,
+    totalIssues: statsData.totalIssues || 0,
+    resolved: statsData.resolved || 0,
+    pending: statsData.pending || 0,
+    rejected: statsData.rejected || 0,
+    totalUsers: statsData.latestUsers?.length || 0, // optionally use totalUsers if backend provides
+    revenue: statsData.totalPayments || 0,
   };
 
-  // --------------------------
-  // Chart Data
-  // --------------------------
+  // Pie chart data
   const pieData = [
     { name: "Resolved", value: stats.resolved },
     { name: "Pending", value: stats.pending },
-    { name: "In Progress", value: stats.inProgress },
+    { name: "Rejected", value: stats.rejected },
   ];
 
-  const COLORS = ["#0088FE", "#FFBB28", "#FF8042"];
+  const COLORS = ["#28a745", "#ffc107", "#dc3545"];
 
   return (
     <div>
-      <h2 className="text-3xl font-headings font-bold mb-8 text-primary">
-        Admin Overview
-      </h2>
+      <h2 className="text-3xl font-bold mb-8 text-primary">Admin Overview</h2>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-12">
         <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
           <div className="stat-figure text-primary text-3xl">
             <FaClipboardList />
@@ -93,24 +93,40 @@ const AdminHome = () => {
         </div>
 
         <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
-          <div className="stat-figure text-secondary text-3xl">
-            <FaUsers />
+          <div className="stat-figure text-warning text-3xl">
+            <FaHourglassHalf />
           </div>
-          <div className="stat-title">Total Users</div>
-          <div className="stat-value text-secondary">{stats.users}</div>
+          <div className="stat-title">Pending</div>
+          <div className="stat-value text-warning">{stats.pending}</div>
         </div>
 
         <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
-          <div className="stat-figure text-warning text-3xl">
+          <div className="stat-figure text-error text-3xl">
+            <FaTimesCircle />
+          </div>
+          <div className="stat-title">Rejected</div>
+          <div className="stat-value text-error">{stats.rejected}</div>
+        </div>
+
+        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
+          <div className="stat-figure text-secondary text-3xl">
+            <FaUsers />
+          </div>
+          <div className="stat-title">Users</div>
+          <div className="stat-value text-secondary">{stats.totalUsers}</div>
+        </div>
+
+        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
+          <div className="stat-figure text-yellow-500 text-3xl">
             <FaMoneyBillWave />
           </div>
-          <div className="stat-title">Revenue</div>
-          <div className="stat-value text-warning">{stats.payments} tk</div>
+          <div className="stat-title">Total Payment</div>
+          <div className="stat-value text-yellow-500">{stats.revenue}</div>
         </div>
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         <div className="card bg-base-100 shadow-xl p-6">
           <h3 className="text-xl font-bold mb-4">Issue Status Distribution</h3>
           <div className="h-64">
@@ -144,6 +160,45 @@ const AdminHome = () => {
           <p className="text-gray-400 text-center py-10">
             Daily submission chart will be here.
           </p>
+        </div>
+      </div>
+
+      {/* Latest Issues, Payments, Users */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="card bg-base-100 shadow-xl p-4">
+          <h4 className="font-bold mb-2">Latest Issues</h4>
+          <ul className="text-sm">
+            {statsData.latestIssues?.map((issue) => (
+              <li
+                key={issue._id}
+                className="mb-1 border-b border-gray-200 pb-1"
+              >
+                {issue.title} ({issue.status})
+              </li>
+            )) || <p>No recent issues</p>}
+          </ul>
+        </div>
+
+        <div className="card bg-base-100 shadow-xl p-4">
+          <h4 className="font-bold mb-2">Latest Payments</h4>
+          <ul className="text-sm">
+            {statsData.latestPayments?.map((p) => (
+              <li key={p._id} className="mb-1 border-b border-gray-200 pb-1">
+                {p.email} — {p.amount} tk
+              </li>
+            )) || <p>No recent payments</p>}
+          </ul>
+        </div>
+
+        <div className="card bg-base-100 shadow-xl p-4">
+          <h4 className="font-bold mb-2">Latest Users</h4>
+          <ul className="text-sm">
+            {statsData.latestUsers?.map((u) => (
+              <li key={u._id} className="mb-1 border-b border-gray-200 pb-1">
+                {u.name} ({u.email})
+              </li>
+            )) || <p>No recent users</p>}
+          </ul>
         </div>
       </div>
     </div>

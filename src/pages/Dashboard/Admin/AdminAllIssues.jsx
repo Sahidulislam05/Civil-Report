@@ -10,6 +10,7 @@ const AdminAllIssues = () => {
   const queryClient = useQueryClient();
   const [selectedIssue, setSelectedIssue] = useState(null);
 
+  // Fetch issues
   const { data: issues = [], isLoading } = useQuery({
     queryKey: ["issues", "admin_all"],
     queryFn: async () => {
@@ -18,27 +19,29 @@ const AdminAllIssues = () => {
     },
   });
 
-  const { data: users = [] } = useQuery({
-    queryKey: ["users"],
+  // Fetch staff
+  const { data: staff = [] } = useQuery({
+    queryKey: ["staff"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users");
-      return res.data.filter((u) => u.role === "staff");
+      const res = await axiosSecure.get("/admin/staff");
+      return res.data;
     },
   });
 
+  // Assign staff mutation
   const assignMutation = useMutation({
     mutationFn: async ({ issueId, staff }) => {
       const res = await axiosSecure.patch(`/issues/${issueId}`, {
         assignedTo: staff,
-        status: "assigned", // status auto update
+        status: "assigned",
       });
       return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["issues"]);
-    },
+    onSuccess: () => queryClient.invalidateQueries(["issues"]),
+    onError: () => toast.error("Failed to assign staff"),
   });
 
+  // Reject issue mutation
   const rejectMutation = useMutation({
     mutationFn: async (id) => {
       const res = await axiosSecure.patch(`/issues/${id}`, {
@@ -50,6 +53,7 @@ const AdminAllIssues = () => {
       queryClient.invalidateQueries(["issues"]);
       toast.success("Issue rejected/closed");
     },
+    onError: () => toast.error("Failed to reject issue"),
   });
 
   const handleReject = (id) => {
@@ -64,33 +68,30 @@ const AdminAllIssues = () => {
     });
   };
 
-  const handleAssign = async (issueId, staff) => {
-    try {
-      await assignMutation.mutateAsync({
-        issueId,
-        staff: {
-          _id: staff._id,
-          name: staff.name,
-          email: staff.email,
-          photoURL: staff.photoURL,
-        },
-      });
-      setSelectedIssue(null); // modal close
-      toast.success(`Assigned to ${staff.name}`);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to assign staff");
-    }
+  const handleAssign = async (issueId, staffMember) => {
+    await assignMutation.mutateAsync({
+      issueId,
+      staff: {
+        _id: staffMember._id,
+        name: staffMember.name,
+        email: staffMember.email,
+        photoURL: staffMember.photoURL,
+      },
+    });
+    setSelectedIssue(null);
+    toast.success(`Assigned to ${staffMember.name}`);
   };
 
   return (
     <div>
-      <h2 className="text-3xl font-headings font-bold mb-8 text-primary">
+      <h2 className="text-3xl font-bold mb-8 text-primary">
         Manage All Issues
       </h2>
 
       {isLoading ? (
-        <span className="loading loading-spinner"></span>
+        <div className="flex justify-center py-10">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+        </div>
       ) : (
         <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg border border-gray-100">
           <table className="table w-full">
@@ -122,9 +123,11 @@ const AdminAllIssues = () => {
                   <td>
                     {issue.assignedTo ? (
                       <div className="flex items-center gap-2">
-                        {/* <div className="avatar w-6 h-6 rounded-full">
-                          <img src={issue.assignedTo.photoURL} alt="Staff" />
-                        </div> */}
+                        {issue.assignedTo.photoURL && (
+                          <div className="avatar w-6 h-6 rounded-full">
+                            <img src={issue.assignedTo.photoURL} alt="Staff" />
+                          </div>
+                        )}
                         <span className="text-sm">{issue.assignedTo.name}</span>
                       </div>
                     ) : (
@@ -164,29 +167,27 @@ const AdminAllIssues = () => {
               Assign Staff to "{selectedIssue.title}"
             </h3>
 
-            <div className="flex flex-col gap-2">
-              {users.map((staff) => (
-                <div
-                  key={staff._id}
-                  className="flex justify-between items-center"
-                >
+            <div className="flex flex-col gap-2 max-h-80 overflow-y-auto">
+              {staff.map((s) => (
+                <div key={s._id} className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
                     <div className="avatar w-8 h-8 rounded-full">
-                      <img src={staff.photoURL} alt="Staff" />
+                      <img src={s.photoURL} alt={s.name} />
                     </div>
                     <span>
-                      {staff.name} ({staff.email})
+                      {s.name} ({s.email})
                     </span>
                   </div>
                   <button
                     className="btn btn-primary"
-                    onClick={() => handleAssign(selectedIssue._id, staff)}
+                    onClick={() => handleAssign(selectedIssue._id, s)}
+                    disabled={assignMutation.isLoading}
                   >
                     Assign
                   </button>
                 </div>
               ))}
-              {users.length === 0 && <p>No staff members found.</p>}
+              {staff.length === 0 && <p>No staff members found.</p>}
             </div>
 
             <div className="modal-action">

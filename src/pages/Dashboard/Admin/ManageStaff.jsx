@@ -15,11 +15,12 @@ const ManageStaff = () => {
 
   const { register, handleSubmit, reset } = useForm();
 
+  // Fetch all staff
   const { data: users = [], isLoading } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["staff"],
     queryFn: async () => {
       const res = await axiosSecure.get("/admin/staff");
-      return res.data.filter((u) => u.role === "staff");
+      return res.data; // backend already filters staff
     },
   });
 
@@ -28,17 +29,17 @@ const ManageStaff = () => {
   // ---------------------------
   const addStaffMutation = useMutation({
     mutationFn: async (staffData) => {
-      const res = await axiosSecure.post("/staff", {
-        ...staffData,
-        role: "staff",
-      });
+      const res = await axiosSecure.post("/admin/create-staff", staffData);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["users"]);
+      queryClient.invalidateQueries(["staff"]);
       toast.success("Staff added successfully");
       setIsModalOpen(false);
       reset();
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to add staff");
     },
   });
 
@@ -47,15 +48,18 @@ const ManageStaff = () => {
   // ---------------------------
   const editStaffMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      const res = await axiosSecure.patch(`/users/${id}`, data);
+      const res = await axiosSecure.patch(`/admin/staff/${id}`, data);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["users"]);
+      queryClient.invalidateQueries(["staff"]);
       toast.success("Staff updated successfully");
       setIsModalOpen(false);
       reset();
       setEditingStaff(null);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to update staff");
     },
   });
 
@@ -64,12 +68,15 @@ const ManageStaff = () => {
   // ---------------------------
   const deleteStaffMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await axiosSecure.delete(`/users/${id}`);
+      const res = await axiosSecure.delete(`/admin/staff/${id}`);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["users"]);
+      queryClient.invalidateQueries(["staff"]);
       toast.success("Staff deleted successfully");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to delete staff");
     },
   });
 
@@ -112,12 +119,10 @@ const ManageStaff = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-headings font-bold text-primary">
-          Manage Staff
-        </h2>
+        <h2 className="text-3xl font-bold text-primary">Manage Staff</h2>
         <button
           onClick={handleAdd}
-          className="btn btn-primary text-white gap-2"
+          className="btn btn-primary gap-2 text-white"
         >
           <FaPlus /> Add Staff
         </button>
@@ -125,7 +130,9 @@ const ManageStaff = () => {
 
       {/* Table */}
       {isLoading ? (
-        <span className="loading loading-spinner"></span>
+        <div className="flex justify-center py-10">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+        </div>
       ) : (
         <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg border border-gray-100">
           <table className="table w-full">
@@ -143,10 +150,10 @@ const ManageStaff = () => {
                   <td>
                     <div className="flex items-center gap-3">
                       <div className="avatar">
-                        <div className="mask mask-squircle w-10 h-10">
+                        <div className="mask mask-squircle w-10 h-10 bg-gray-200 flex items-center justify-center">
                           <img
                             src={
-                              staff.photoURL ||
+                              staff.image ||
                               "https://i.ibb.co/30tG9P9/staff-avatar.png"
                             }
                             alt="Staff"
@@ -205,15 +212,17 @@ const ManageStaff = () => {
               <input
                 type="text"
                 placeholder="Photo URL"
-                {...register("photoURL")}
+                {...register("image")}
                 className="input input-bordered w-full"
               />
-              <input
-                type="password"
-                placeholder="Password"
-                {...register("password", { required: !editingStaff })}
-                className="input input-bordered w-full"
-              />
+              {!editingStaff && (
+                <input
+                  type="password"
+                  placeholder="Password"
+                  {...register("password", { required: true })}
+                  className="input input-bordered w-full"
+                />
+              )}
               <div className="flex justify-end gap-2">
                 <button
                   type="button"

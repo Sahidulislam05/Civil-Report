@@ -15,13 +15,14 @@ import Profile from "../pages/Dashboard/Profile/Profile";
 import AdminHome from "../pages/Dashboard/Admin/AdminHome";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageStaff from "../pages/Dashboard/Admin/ManageStaff";
-import Payments from "../pages/Dashboard/Admin/payments";
 import AdminAllIssues from "../pages/Dashboard/Admin/AdminAllIssues";
 import StaffHome from "../pages/Dashboard/Staff/StaffHome";
 import AssignedIssues from "../pages/Dashboard/Staff/AssignedIssues";
 import Contact from "../pages/Contact/Contact";
 import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 import StaffProfile from "../pages/Dashboard/Staff/StaffProfile";
+import PaymentPage from "../pages/Dashboard/Admin/PaymentPage";
+import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
 
 const router = createBrowserRouter([
   {
@@ -107,7 +108,7 @@ const router = createBrowserRouter([
       },
       {
         path: "payments",
-        element: <Payments></Payments>,
+        element: <PaymentPage></PaymentPage>,
       },
       {
         path: "all-issues-admin",
@@ -116,6 +117,10 @@ const router = createBrowserRouter([
       {
         path: "staff-profile",
         element: <StaffProfile></StaffProfile>,
+      },
+      {
+        path: "admin-profile",
+        element: <AdminProfile></AdminProfile>,
       },
       // Staff
       {

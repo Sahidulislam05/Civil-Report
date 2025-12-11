@@ -89,7 +89,7 @@ const DashboardLayout = () => {
         </NavLink>
       </li>
       <li>
-        <NavLink to="/dashboard/profile">
+        <NavLink to="/dashboard/admin-profile">
           <FaUser /> Profile
         </NavLink>
       </li>

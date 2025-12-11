@@ -4,7 +4,7 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 
-const ProfilePage = () => {
+const AdminProfile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
@@ -12,30 +12,34 @@ const ProfilePage = () => {
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
 
-  // Fetch user profile info
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ["user", user.email],
+  // Fetch admin profile info
+  const {
+    data: profile,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["adminProfile", user.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/user/info/${user.email}`);
+      const res = await axiosSecure.get(`/admin/profile/${user.email}`);
       return res.data;
     },
-    onSuccess: () => {
-      setName(user?.name || "");
-      setImage(null); // reset file input
+    onSuccess: (data) => {
+      setName(data.name || user?.name || "");
+      setImage(null);
     },
   });
 
-  // Update profile mutation
+  // Update admin profile
   const updateMutation = useMutation({
     mutationFn: async (formData) => {
-      const res = await axiosSecure.patch(`/user/profile`, formData, {
+      const res = await axiosSecure.patch(`/admin/profile`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return res.data;
     },
     onSuccess: () => {
       toast.success("Profile updated successfully");
-      queryClient.invalidateQueries(["user", user.email]);
+      queryClient.invalidateQueries(["adminProfile", user.email]);
     },
     onError: (err) => {
       toast.error(err.response?.data?.message || "Failed to update profile");
@@ -59,21 +63,30 @@ const ProfilePage = () => {
     );
   }
 
+  if (isError) {
+    return (
+      <div className="text-red-500 text-center py-20">
+        Failed to load admin profile.
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-xl border border-gray-100">
-      <h2 className="text-2xl font-bold text-primary mb-6">My Profile</h2>
+      <h2 className="text-2xl font-bold text-primary mb-6">Admin Profile</h2>
 
       <div className="mb-6 flex items-center space-x-4">
         <img
-          src={user?.image || "/default-avatar.png"}
-          alt="Profile"
+          src={profile?.photoURL || "/default-avatar.png"}
+          alt="Admin"
           className="w-20 h-20 rounded-full object-cover border"
         />
         <div>
-          <p className="font-medium">{user?.name}</p>
-          <p className="text-gray-500">{user?.email}</p>
+          <p className="font-medium">{profile?.name || user?.name}</p>
+          <p className="text-gray-500">{profile?.email || user?.email}</p>
           <p className="text-sm">
-            Role: <span className="font-semibold">{profile?.role}</span>
+            Role:{" "}
+            <span className="font-semibold">{profile?.role || "admin"}</span>
           </p>
           {profile?.premium && (
             <p className="text-sm text-green-600 font-semibold">Premium User</p>
@@ -120,4 +133,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default AdminProfile;
