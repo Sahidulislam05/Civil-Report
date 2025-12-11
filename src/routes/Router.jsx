@@ -21,6 +21,7 @@ import StaffHome from "../pages/Dashboard/Staff/StaffHome";
 import AssignedIssues from "../pages/Dashboard/Staff/AssignedIssues";
 import Contact from "../pages/Contact/Contact";
 import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
+import StaffProfile from "../pages/Dashboard/Staff/StaffProfile";
 
 const router = createBrowserRouter([
   {
@@ -112,7 +113,10 @@ const router = createBrowserRouter([
         path: "all-issues-admin",
         element: <AdminAllIssues></AdminAllIssues>,
       },
-
+      {
+        path: "staff-profile",
+        element: <StaffProfile></StaffProfile>,
+      },
       // Staff
       {
         path: "staff",

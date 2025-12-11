@@ -1,35 +1,63 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { imageUpload } from "../../../utils";
-import { useNavigate } from "react-router";
 
 const ReportIssue = () => {
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const [uploading, setUploading] = useState(false);
-  const navigate = useNavigate();
-
-  // Mutation to call /issues API
+  // Mutation to create issue
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (payload) => await axiosSecure.post("/issues", payload),
-    onSuccess: () => toast.success("Issue reported successfully!"),
-    onError: (err) =>
-      toast.error(err?.response?.data?.error || "Submission failed!"),
+    onError: (err) => {
+      const status = err?.response?.status;
+      const data = err?.response?.data;
+
+      // Free user limit detected
+      if (status === 403 && data?.message === "Free user limit reached!") {
+        Swal.fire({
+          icon: "warning",
+          title: "Free User Limit Reached",
+          text: "You can submit only 3 issues. Please subscribe for unlimited submissions.",
+          showCancelButton: true,
+          confirmButtonText: "Subscribe Now",
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) navigate("/dashboard/profile");
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Submission Failed",
+          text: data?.message || "Something went wrong",
+        });
+      }
+    },
+    onSuccess: () => {
+      Swal.fire({
+        icon: "success",
+        title: "Issue Submitted",
+        text: "Your issue has been reported successfully!",
+      });
+      navigate("/my-issues");
+    },
   });
 
   const onSubmit = async (data) => {
     setUploading(true);
     try {
       const imageURL = await imageUpload(data.image[0]);
-      console.log("Uploaded Image URL:", imageURL);
 
       const issueData = {
         title: data.title,
@@ -41,10 +69,10 @@ const ReportIssue = () => {
       };
 
       await mutateAsync(issueData);
-      navigate("/all-issues");
+
+      // timeline added in backend already
     } catch (error) {
-      console.error("Issue submission error:", error);
-      toast.error("Failed to submit issue!");
+      console.error(error);
     } finally {
       setUploading(false);
     }
@@ -53,7 +81,6 @@ const ReportIssue = () => {
   return (
     <div className="max-w-2xl mx-auto p-8 bg-base-100 rounded-xl shadow-xl mt-8">
       <h2 className="text-3xl font-bold mb-6 text-primary">Report an Issue</h2>
-
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Title */}
         <div className="form-control">
@@ -62,8 +89,7 @@ const ReportIssue = () => {
           </label>
           <input
             type="text"
-            placeholder="e.g. Broken Streetlight"
-            className="input input-bordered focus:input-primary"
+            className="input input-bordered"
             {...register("title", { required: true })}
           />
           {errors.title && <p className="text-error">Title is required</p>}
@@ -75,10 +101,9 @@ const ReportIssue = () => {
             <span className="label-text">Description</span>
           </label>
           <textarea
-            className="textarea textarea-bordered h-28 focus:textarea-primary"
-            placeholder="Describe the issue..."
+            className="textarea textarea-bordered h-28"
             {...register("description", { required: true })}
-          />
+          ></textarea>
           {errors.description && (
             <p className="text-error">Description is required</p>
           )}
@@ -102,15 +127,13 @@ const ReportIssue = () => {
               <option value="Other">Other</option>
             </select>
           </div>
-
           <div className="form-control">
             <label className="label">
               <span className="label-text">Location</span>
             </label>
             <input
               type="text"
-              placeholder="Sector 10, Rd 5"
-              className="input input-bordered focus:input-primary"
+              className="input input-bordered"
               {...register("location", { required: true })}
             />
             {errors.location && (
@@ -119,7 +142,7 @@ const ReportIssue = () => {
           </div>
         </div>
 
-        {/* Image Upload */}
+        {/* Image */}
         <div className="form-control">
           <label className="label">
             <span className="label-text">Evidence (Photo)</span>
@@ -127,7 +150,7 @@ const ReportIssue = () => {
           <input
             type="file"
             accept="image/*"
-            className="file-input file-input-bordered file-input-primary w-full"
+            className="file-input file-input-bordered w-full"
             {...register("image", { required: true })}
           />
           {errors.image && <p className="text-error">Image is required</p>}
