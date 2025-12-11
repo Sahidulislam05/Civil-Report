@@ -19,7 +19,7 @@ const useUserInfo = () => {
     },
   });
 
-  return [data, isLoading, refetch]; // return refetch as third element
+  return [data, isLoading, refetch];
 };
 
 export default useUserInfo;

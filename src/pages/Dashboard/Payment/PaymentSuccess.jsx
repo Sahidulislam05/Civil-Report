@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
+import { getAuth } from "firebase/auth";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -10,14 +11,31 @@ const PaymentSuccess = () => {
   useEffect(() => {
     const verify = async () => {
       if (!sessionId) return;
+
       try {
-        await axios.post(`${import.meta.env.VITE_API_URL}/session-status`, {
-          sessionId,
-        });
+        const auth = getAuth();
+
+        // ⚠️ Stripe theke ferar por token expire thake
+        // 100% working fix: force refresh token
+        const token = await auth.currentUser.getIdToken(true);
+
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/session-status`,
+          { sessionId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          }
+        );
+      } catch (err) {
+        console.log("Payment Verify Error:", err.response?.data || err);
       } finally {
         setLoading(false);
       }
     };
+
     verify();
   }, [sessionId]);
 

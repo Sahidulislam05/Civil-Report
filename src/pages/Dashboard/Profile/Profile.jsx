@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useUserInfo from "../../../hooks/useUserInfo";
+import Swal from "sweetalert2";
 
 const Profile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const [userInfo, isLoading, refetchUserInfo] = useUserInfo(); // include refetch
+  const [userInfo, isLoading, refetchUserInfo] = useUserInfo();
 
   const handleSubscribe = async () => {
     try {
@@ -24,12 +25,19 @@ const Profile = () => {
 
       window.location.replace(res.data.url); // redirect to Stripe
     } catch (err) {
-      console.error(err.response?.data || err);
-      alert("Payment failed, please try again.");
+      const message =
+        err.response?.data?.message || "Payment failed, please try again.";
+
+      Swal.fire({
+        icon: "error",
+        title: "Payment Error",
+        text: message,
+        confirmButtonText: "OK",
+      });
     }
   };
 
-  // Check if returning from Stripe after successful payment
+  // Check Stripe return status
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id");
@@ -38,7 +46,7 @@ const Profile = () => {
       (async () => {
         try {
           await axiosSecure.post("/session-status", { sessionId });
-          refetchUserInfo(); // refetch user info to show premium badge
+          refetchUserInfo();
         } catch (err) {
           console.error("Payment status check failed:", err);
         }
@@ -64,20 +72,16 @@ const Profile = () => {
             className="mx-auto object-cover rounded-full h-24 w-24 border-2 border-white"
           />
 
-          {userInfo?.premium ? (
-            <p className="p-2 px-4 text-xs text-white bg-yellow-500 rounded-full">
-              ⭐ Premium User
-            </p>
-          ) : (
-            <p className="p-2 px-4 text-xs text-white bg-gray-600 rounded-full">
-              {userInfo?.role}
-            </p>
-          )}
+          {/* Role tag */}
+          <p className="p-2 px-4 text-xs text-white bg-gray-600 rounded-full">
+            {userInfo?.role}
+          </p>
 
+          {/* ⛔ Blocked User Warning */}
           {userInfo?.blocked && (
-            <p className="bg-red-500 mt-2 text-white px-3 py-1 rounded-lg text-sm">
-              Your account is blocked. Please contact authorities.
-            </p>
+            <div className="w-full bg-red-500 mt-2 text-white px-3 py-2 rounded-lg text-center font-semibold">
+              ⛔ Your account is blocked. Please contact authorities.
+            </div>
           )}
 
           <p className="mt-2 text-xl font-medium text-gray-800">
@@ -88,7 +92,15 @@ const Profile = () => {
             <div className="flex flex-wrap items-center justify-between text-sm text-gray-600">
               <p className="flex flex-col">
                 Name
-                <span className="font-bold">{user?.displayName}</span>
+                <span className="font-bold flex items-center gap-2">
+                  {user?.displayName}
+                  {/* ⭐ Premium Badge */}
+                  {userInfo?.premium && (
+                    <span className="flex items-center gap-1 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs">
+                      ⭐ Premium
+                    </span>
+                  )}
+                </span>
               </p>
 
               <p className="flex flex-col">
@@ -96,8 +108,8 @@ const Profile = () => {
                 <span className="font-bold">{user?.email}</span>
               </p>
 
-              <div>
-                <button className="bg-lime-500 px-10 py-1 rounded-lg text-white hover:bg-lime-800 block mb-1">
+              <div className="flex flex-col gap-2 mt-2 sm:mt-0">
+                <button className="bg-lime-500 px-10 py-1 rounded-lg text-white hover:bg-lime-800">
                   Update Profile
                 </button>
 
@@ -108,13 +120,21 @@ const Profile = () => {
             </div>
           </div>
 
-          {!userInfo?.premium && !userInfo?.blocked && (
+          {/* Subscription Area */}
+          {!userInfo?.premium && (
             <div className="w-full px-6 mt-4">
               <button
-                className="bg-blue-600 text-white w-full py-2 rounded-lg hover:bg-blue-800"
                 onClick={handleSubscribe}
+                disabled={userInfo?.blocked} // disable if blocked
+                className={`w-full py-2 rounded-lg text-white font-medium ${
+                  userInfo?.blocked
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-800"
+                }`}
               >
-                Subscribe (1000tk = 10$)
+                {userInfo?.blocked
+                  ? "Subscription Disabled (Blocked)"
+                  : "Subscribe (1000tk = 10$)"}
               </button>
             </div>
           )}
