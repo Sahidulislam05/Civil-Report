@@ -20,7 +20,6 @@ import StaffHome from "../pages/Dashboard/Staff/StaffHome";
 import AssignedIssues from "../pages/Dashboard/Staff/AssignedIssues";
 import Contact from "../pages/Contact/Contact";
 import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
-import StaffProfile from "../pages/Dashboard/Staff/StaffProfile";
 import PaymentPage from "../pages/Dashboard/Admin/PaymentPage";
 import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
 
@@ -60,6 +59,7 @@ const router = createBrowserRouter([
     path: "/login",
     Component: Login,
   },
+
   {
     path: "/payment-success",
     element: <PaymentSuccess></PaymentSuccess>,
@@ -114,12 +114,9 @@ const router = createBrowserRouter([
         path: "all-issues-admin",
         element: <AdminAllIssues></AdminAllIssues>,
       },
+
       {
-        path: "staff-profile",
-        element: <StaffProfile></StaffProfile>,
-      },
-      {
-        path: "admin-profile",
+        path: "my-profile",
         element: <AdminProfile></AdminProfile>,
       },
       // Staff

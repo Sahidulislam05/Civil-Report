@@ -3,6 +3,7 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useUserInfo from "../../../hooks/useUserInfo";
 import Swal from "sweetalert2";
+import { Link } from "react-router";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ const Profile = () => {
         paymentInfo
       );
 
-      window.location.replace(res.data.url); // redirect to Stripe
+      window.location.replace(res.data.url);
     } catch (err) {
       const message =
         err.response?.data?.message || "Payment failed, please try again.";
@@ -77,7 +78,6 @@ const Profile = () => {
             {userInfo?.role}
           </p>
 
-          {/* ⛔ Blocked User Warning */}
           {userInfo?.blocked && (
             <div className="w-full bg-red-500 mt-2 text-white px-3 py-2 rounded-lg text-center font-semibold">
               ⛔ Your account is blocked. Please contact authorities.
@@ -107,16 +107,6 @@ const Profile = () => {
                 Email
                 <span className="font-bold">{user?.email}</span>
               </p>
-
-              <div className="flex flex-col gap-2 mt-2 sm:mt-0">
-                <button className="bg-lime-500 px-10 py-1 rounded-lg text-white hover:bg-lime-800">
-                  Update Profile
-                </button>
-
-                <button className="bg-lime-500 px-7 py-1 rounded-lg text-white hover:bg-lime-800">
-                  Change Password
-                </button>
-              </div>
             </div>
           </div>
 
