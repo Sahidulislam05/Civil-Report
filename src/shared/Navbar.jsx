@@ -1,12 +1,10 @@
-import { FaRegArrowAltCircleRight, FaUserCircle } from "react-icons/fa";
+import { FaRegArrowAltCircleRight } from "react-icons/fa";
 import { Link, NavLink } from "react-router";
 import useAuth from "../hooks/useAuth";
+// import logo from "../../public/logo.svg";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
-
-  // Determine dashboard link based on role
-
   const getDashboardLink = () => {
     if (!user) return "/";
     if (user.role === "admin") return "/dashboard/admin";
@@ -95,9 +93,12 @@ const Navbar = () => {
             </div>
             <Link
               to="/"
-              className=" text-2xl font-headings font-bold text-primary gap-0"
+              className="flex items-center gap-2 md:text-2xl font-headings font-bold text-primary"
             >
-              Civil<span className="text-secondary"> Report</span>
+              <img className="w-7" src="/logo.svg" alt="Logo" />
+              <p>
+                Civil<span className="text-secondary"> Report</span>
+              </p>
             </Link>
           </div>
           <div className="navbar-center hidden lg:flex">
