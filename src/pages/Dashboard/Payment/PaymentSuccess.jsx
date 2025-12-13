@@ -14,9 +14,6 @@ const PaymentSuccess = () => {
 
       try {
         const auth = getAuth();
-
-        // ⚠️ Stripe theke ferar por token expire thake
-        // 100% working fix: force refresh token
         const token = await auth.currentUser.getIdToken(true);
 
         await axios.post(

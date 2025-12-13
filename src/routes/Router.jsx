@@ -22,6 +22,7 @@ import Contact from "../pages/Contact/Contact";
 import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 import PaymentPage from "../pages/Dashboard/Admin/PaymentPage";
 import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
+import BoostSuccess from "../pages/Dashboard/Payment/BoostSuccess";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
   {
     path: "/payment-success",
     element: <PaymentSuccess></PaymentSuccess>,
+  },
+  {
+    path: "/boost-success",
+    element: <BoostSuccess></BoostSuccess>,
   },
   {
     path: "/dashboard",
