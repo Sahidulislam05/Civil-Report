@@ -23,6 +23,7 @@ import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 import PaymentPage from "../pages/Dashboard/Admin/PaymentPage";
 import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
 import BoostSuccess from "../pages/Dashboard/Payment/BoostSuccess";
+import AboutUs from "../pages/About/AboutUs";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "/all-issues",
         Component: AllIssues,
+      },
+      {
+        path: "/about-us",
+        Component: AboutUs,
       },
       {
         path: "/issues-details/:id",
