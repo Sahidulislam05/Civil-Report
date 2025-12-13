@@ -19,7 +19,7 @@ export default function IssueDetails() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  /* ================= FETCH ISSUE ================= */
+  
   const {
     data: issue,
     isLoading,
