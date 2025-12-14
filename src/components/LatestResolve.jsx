@@ -5,9 +5,7 @@ const LatestResolve = () => {
   const { data: issues = [], isLoading } = useLatestResolvedIssues();
 
   if (isLoading)
-    return (
-      <p className="text-center py-10">Loading latest resolved issues...</p>
-    );
+    return <span className="loading loading-spinner text-success"></span>;
 
   return (
     <div className="my-10">
