@@ -33,7 +33,7 @@ export default function AllIssues() {
   });
 
   return (
-    <div className="py-12 bg-gray-50 min-h-screen">
+    <div className="py-12 bg-gray-50 min-h-screen mt-16">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">

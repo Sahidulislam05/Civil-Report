@@ -21,8 +21,7 @@ const teamMembers = [
 
 export default function AboutUs() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16">
-      {/* ================= HERO ================= */}
+    <div className="mt-16 w-11/12 mx-auto px-4 py-16">
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
           About Civil Report

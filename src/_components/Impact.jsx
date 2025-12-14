@@ -8,7 +8,7 @@ const Impact = () => {
           Our Impact & Achievements
         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 max-w-5xl mx-auto text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 w-11/12 mx-auto text-center">
           {[
             { icon: "🏆", count: "1400+", label: "Issues Resolved" },
             { icon: "👥", count: "800+", label: "Active Users" },

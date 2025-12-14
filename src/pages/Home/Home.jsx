@@ -7,13 +7,15 @@ import LatestResolve from "../../components/LatestResolve";
 
 const Home = () => {
   return (
-    <div>
-      <Banner></Banner>
-      <LatestResolve></LatestResolve>
-      <Features></Features>
-      <HowItWorks></HowItWorks>
-      <Impact></Impact>
-      <CitizensVoice></CitizensVoice>
+    <div className="mt-16">
+      <div className=" w-11/12 mx-auto">
+        <Banner></Banner>
+        <LatestResolve></LatestResolve>
+        <Features></Features>
+        <HowItWorks></HowItWorks>
+        <Impact></Impact>
+        <CitizensVoice></CitizensVoice>
+      </div>
     </div>
   );
 };

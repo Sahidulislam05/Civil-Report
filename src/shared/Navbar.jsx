@@ -60,7 +60,7 @@ const Navbar = () => {
 
   return (
     <section>
-      <nav className="bg-base-300 ">
+      <nav className="bg-base-300 fixed top-0 left-0 w-full z-10">
         <div className="navbar w-11/12 mx-auto ">
           <div className="navbar-start ">
             <div className="dropdown">
