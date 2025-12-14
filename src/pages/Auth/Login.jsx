@@ -12,6 +12,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const { loginUser, user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,7 +27,6 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const { user } = await loginUser(data.email, data.password);
-
       await saveUser({
         name: user?.displayName,
         image: user?.photoURL,
@@ -35,7 +35,7 @@ const Login = () => {
       toast.success("Welcome back!");
       navigate(from, { replace: true });
     } catch (error) {
-      toast.error(error.code);
+      toast.error(error.code || "Login failed!");
       console.log(error);
     }
   };
@@ -43,39 +43,47 @@ const Login = () => {
   if (loading && user) return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
-      <div className="w-full max-w-md bg-white border shadow-xl rounded-2xl p-8">
-        <h2 className="text-3xl font-bold text-center text-primary mb-6">
-          Login
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-purple-100 via-pink-100 to-yellow-100 px-4 py-10">
+      <div className="w-full max-w-md bg-white shadow-2xl rounded-3xl p-8 space-y-6 animate-fade-in">
+        <h2 className="text-3xl font-bold text-center text-primary">Login</h2>
+        <p className="text-center text-gray-500">
+          Welcome back! Please login to continue.
+        </p>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Email */}
-          <div>
-            <label className="text-sm font-medium block mb-1">Email</label>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">Email</span>
+            </label>
             <input
               type="email"
               placeholder="email@example.com"
-              className="w-full border rounded-lg px-4 py-3 outline-none focus:border-primary"
-              {...register("email", { required: true })}
+              className="input input-bordered input-primary w-full"
+              {...register("email", { required: "Email is required" })}
             />
             {errors.email && (
-              <p className="text-xs text-red-500 mt-1">Email is required</p>
+              <p className="text-error text-sm mt-1">{errors.email.message}</p>
             )}
           </div>
 
           {/* Password */}
-          <div>
-            <label className="text-sm font-medium block mb-1">Password</label>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">Password</span>
+            </label>
             <input
               type="password"
-              placeholder="******"
-              className="w-full border rounded-lg px-4 py-3 outline-none focus:border-primary"
-              {...register("password", { required: true })}
+              placeholder="********"
+              className="input input-bordered input-secondary w-full"
+              {...register("password", { required: "Password is required" })}
             />
             {errors.password && (
-              <p className="text-xs text-red-500 mt-1">Password is required</p>
+              <p className="text-error text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-1">
               <Link
                 to="#"
                 className="text-xs font-medium text-primary hover:underline"
@@ -86,12 +94,15 @@ const Login = () => {
           </div>
 
           {/* Submit */}
-          <button className="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primary/90 transition disabled:opacity-60">
+          <button
+            type="submit"
+            className="btn btn-primary w-full text-white font-semibold text-lg hover:btn-secondary transition-all"
+          >
             Login
           </button>
         </form>
 
-        <p className="text-center text-sm mt-6">
+        <p className="text-center text-sm text-gray-600 mt-6">
           New here?{" "}
           <Link
             to="/register"
@@ -101,9 +112,10 @@ const Login = () => {
           </Link>
         </p>
 
+        {/* Divider */}
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-xs text-gray-500">or</span>
+          <span className="text-xs text-gray-500">or continue with</span>
           <div className="flex-1 h-px bg-gray-200" />
         </div>
 

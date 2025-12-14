@@ -1,6 +1,6 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router";
+import { useSearchParams, useNavigate, Link } from "react-router";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -14,7 +14,6 @@ const BoostSuccess = () => {
 
   useEffect(() => {
     const auth = getAuth();
-
     const verifyPayment = async (user) => {
       if (!sessionId || !user) return;
 
@@ -75,12 +74,12 @@ const BoostSuccess = () => {
             <p className="text-gray-600 mb-6">
               Your issue priority is now <strong>HIGH</strong>.
             </p>
-            <button
-              onClick={() => navigate(-1)}
+            <Link
+              to={"/all-issues"}
               className="bg-lime-500 hover:bg-lime-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-300"
             >
               Back to Issue
-            </button>
+            </Link>
           </>
         ) : (
           <>

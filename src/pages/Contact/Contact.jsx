@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 bg-neutral-900/30">
+    <section id="contact" className="py-24 text-black">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -15,7 +15,7 @@ export default function Contact() {
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">
             Get In <span className="text-purple-400">Touch</span>
           </h2>
-          <p className="text-neutral-400">Let's discuss your next project</p>
+          <p className="text-neutral-400">Let's discuss our project</p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
@@ -38,7 +38,7 @@ export default function Contact() {
                 <p className="text-sm text-neutral-500 mb-1">Email</p>
                 <a
                   href="mailto:sahidulislamcst@gmail.com"
-                  className="text-white hover:text-cyan-400 transition-colors"
+                  className=" hover:text-cyan-400 transition-colors"
                 >
                   sahidulislamcst@gmail.com
                 </a>
@@ -53,7 +53,7 @@ export default function Contact() {
                 <p className="text-sm text-neutral-500 mb-1">Phone</p>
                 <a
                   href="tel:+8801960854767"
-                  className="text-white hover:text-purple-400 transition-colors"
+                  className=" hover:text-purple-400 transition-colors"
                 >
                   +880 1960 854 767
                 </a>
@@ -66,7 +66,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="text-sm text-neutral-500 mb-1">Location</p>
-                <p className="text-white">Tangail, Bangladesh</p>
+                <p>Tangail, Bangladesh</p>
               </div>
             </div>
 
@@ -143,7 +143,7 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-medium hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-lg bg-linear-to-r from-cyan-500 to-purple-600 text-white font-medium hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all flex items-center justify-center gap-2"
               >
                 Send Message
                 <Send className="w-4 h-4" />

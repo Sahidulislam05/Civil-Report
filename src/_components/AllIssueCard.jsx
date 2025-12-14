@@ -15,15 +15,12 @@ export default function AllIssueCard({ issue }) {
     mutationFn: async () => {
       return axiosSecure.post(`/issues/${issue._id}/upvote`);
     },
-
     onMutate: async () => {
       await queryClient.cancelQueries(["all-issues"]);
-
       const previous = queryClient.getQueryData(["all-issues"]);
 
       queryClient.setQueryData(["all-issues"], (old) => {
         if (!old) return old;
-
         return {
           ...old,
           issues: old.issues.map((i) =>
@@ -36,12 +33,10 @@ export default function AllIssueCard({ issue }) {
 
       return { previous };
     },
-
     onError: (err, _, context) => {
       queryClient.setQueryData(["all-issues"], context.previous);
       toast.error(err.response?.data?.error || "Upvote failed");
     },
-
     onSettled: () => {
       queryClient.invalidateQueries(["all-issues"]);
     },
@@ -62,28 +57,72 @@ export default function AllIssueCard({ issue }) {
   };
 
   return (
-    <div className="card bg-white shadow-md relative">
-      {/* Boosted badge */}
-      {issue.priority === "high" && (
-        <span className="badge badge-error absolute top-3 right-3">
-          Boosted
-        </span>
+    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden flex flex-col">
+      {/* Image */}
+      {issue.image && (
+        <figure>
+          <img
+            src={issue.image}
+            alt={issue.title}
+            className="w-full h-48 object-cover"
+          />
+        </figure>
       )}
 
-      <div className="card-body">
-        <h2 className="card-title">{issue.title}</h2>
+      <div className="card-body flex flex-col grow">
+        {/* Boosted badge */}
+        {issue.priority === "high" && (
+          <span className="badge badge-error absolute top-3 right-3 z-10">
+            Boosted
+          </span>
+        )}
 
-        <div className="flex gap-2">
-          <span className="badge badge-outline">{issue.category}</span>
-          <span className="badge badge-info">{issue.status}</span>
+        <h2 className="card-title text-lg font-bold line-clamp-2">
+          {issue.title}
+        </h2>
+
+        <p className="text-gray-500 text-sm line-clamp-3 mt-1">
+          {issue.description || "No description provided."}
+        </p>
+
+        <div className="flex flex-wrap gap-2 mt-3">
+          <span className="badge badge-outline">
+            {issue.category || "General"}
+          </span>
+          <span
+            className={`badge ${
+              issue.status === "resolved"
+                ? "badge-success"
+                : issue.status === "in-progress"
+                ? "badge-warning"
+                : "badge-info"
+            }`}
+          >
+            {issue.status}
+          </span>
+          <span
+            className={`badge ${
+              issue.priority === "high"
+                ? "badge-error"
+                : issue.priority === "medium"
+                ? "badge-warning"
+                : "badge-success"
+            }`}
+          >
+            {issue.priority || "Normal"}
+          </span>
         </div>
 
-        <div className="flex justify-between items-center mt-4">
-          {/* UPVOTE */}
+        <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
+          <span>Upvotes: {issue.upvoteCount || 0}</span>
+          <span>{new Date(issue.createdAt).toLocaleDateString("en-US")}</span>
+        </div>
+
+        <div className="mt-4 flex gap-2">
           <button
             onClick={handleUpvote}
             disabled={upvoteMutation.isLoading}
-            className="btn btn-sm btn-outline flex gap-2"
+            className="btn btn-sm btn-outline flex-1 flex items-center justify-center gap-2"
           >
             <FaArrowUp />
             {issue.upvoteCount || 0}
@@ -91,7 +130,7 @@ export default function AllIssueCard({ issue }) {
 
           <Link
             to={`/issues-details/${issue._id}`}
-            className="btn btn-sm btn-primary"
+            className="btn btn-sm btn-primary flex-1 text-center"
           >
             View Details
           </Link>

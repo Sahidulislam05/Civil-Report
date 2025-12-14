@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, Link } from "react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   FaEdit,
@@ -11,6 +11,7 @@ import {
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 export default function IssueDetails() {
   const { id } = useParams();
@@ -19,7 +20,6 @@ export default function IssueDetails() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  
   const {
     data: issue,
     isLoading,
@@ -54,6 +54,22 @@ export default function IssueDetails() {
     },
     onError: (err) => toast.error(err.response?.data?.error || "Delete failed"),
   });
+
+  const handleDelete = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This issue will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete it",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteMutation.mutate();
+      }
+    });
+  };
 
   /* ================= BOOST ================= */
   const handleBoost = async () => {
@@ -94,7 +110,7 @@ export default function IssueDetails() {
   const canEdit = isOwner && issue.status === "pending";
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="max-w-6xl mx-auto px-4 py-12 mt-16">
       {/* ================= ISSUE CARD ================= */}
       <div className="bg-white shadow-xl rounded-xl p-6 mb-10">
         <div className="flex justify-between items-start">
@@ -131,20 +147,21 @@ export default function IssueDetails() {
         {/* ================= ACTIONS ================= */}
         <div className="flex flex-wrap gap-3 mt-8">
           {canEdit && (
-            <button
-              className="btn btn-outline"
-              onClick={() => navigate(`/dashboard/edit-issue/${id}`)}
+            <Link
+              to={`/edit-issue/${issue._id}`}
+              className="btn btn-outline flex items-center gap-2"
             >
               <FaEdit /> Edit
-            </button>
+            </Link>
           )}
 
           {isOwner && (
             <button
               className="btn btn-error btn-outline"
-              onClick={() => deleteMutation.mutate()}
+              onClick={handleDelete}
+              disabled={deleteMutation.isLoading}
             >
-              <FaTrash /> Delete
+              {deleteMutation.isLoading ? "Deleting..." : "Delete"}
             </button>
           )}
 

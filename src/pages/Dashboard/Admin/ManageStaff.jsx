@@ -20,13 +20,11 @@ const ManageStaff = () => {
     queryKey: ["staff"],
     queryFn: async () => {
       const res = await axiosSecure.get("/admin/staff");
-      return res.data; // backend already filters staff
+      return res.data;
     },
   });
 
-  // ---------------------------
   // Add Staff Mutation
-  // ---------------------------
   const addStaffMutation = useMutation({
     mutationFn: async (staffData) => {
       const res = await axiosSecure.post("/admin/create-staff", staffData);
@@ -39,13 +37,11 @@ const ManageStaff = () => {
       reset();
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.message || "Failed to add staff");
+      toast.error(err?.response?.data?.error || "Failed to add staff");
     },
   });
 
-  // ---------------------------
   // Edit Staff Mutation
-  // ---------------------------
   const editStaffMutation = useMutation({
     mutationFn: async ({ id, data }) => {
       const res = await axiosSecure.patch(`/admin/staff/${id}`, data);
@@ -59,13 +55,11 @@ const ManageStaff = () => {
       setEditingStaff(null);
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.message || "Failed to update staff");
+      toast.error(err?.response?.data?.error || "Failed to update staff");
     },
   });
 
-  // ---------------------------
   // Delete Staff Mutation
-  // ---------------------------
   const deleteStaffMutation = useMutation({
     mutationFn: async (id) => {
       const res = await axiosSecure.delete(`/admin/staff/${id}`);
@@ -76,13 +70,11 @@ const ManageStaff = () => {
       toast.success("Staff deleted successfully");
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.message || "Failed to delete staff");
+      toast.error(err?.response?.data?.error || "Failed to delete staff");
     },
   });
 
-  // ---------------------------
   // Handlers
-  // ---------------------------
   const handleAdd = () => {
     setEditingStaff(null);
     reset();
@@ -110,14 +102,21 @@ const ManageStaff = () => {
 
   const onSubmit = (data) => {
     if (editingStaff) {
+      // Edit existing staff
       editStaffMutation.mutate({ id: editingStaff._id, data });
     } else {
+      // Add new staff (password required)
+      if (!data.password) {
+        toast.error("Password is required for new staff");
+        return;
+      }
       addStaffMutation.mutate(data);
     }
   };
 
   return (
     <div>
+      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold text-primary">Manage Staff</h2>
         <button
@@ -215,6 +214,7 @@ const ManageStaff = () => {
                 {...register("image")}
                 className="input input-bordered w-full"
               />
+              {/* Password for new staff only */}
               {!editingStaff && (
                 <input
                   type="password"

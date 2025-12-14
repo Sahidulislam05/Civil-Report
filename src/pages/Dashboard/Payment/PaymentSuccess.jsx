@@ -1,40 +1,36 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { getAuth } from "firebase/auth";
+import useUserInfo from "../../../hooks/useUserInfo";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
-  const [loading, setLoading] = useState(true);
   const sessionId = searchParams.get("session_id");
+  const [loading, setLoading] = useState(true);
+
+  const [, , refetchUserInfo] = useUserInfo();
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
-    const verify = async () => {
+    const verifyPayment = async () => {
       if (!sessionId) return;
 
       try {
-        const auth = getAuth();
-        const token = await auth.currentUser.getIdToken(true);
+        const res = await axiosSecure.post("/session-status", { sessionId });
+        console.log("Payment verified:", res.data);
 
-        await axios.post(
-          `${import.meta.env.VITE_API_URL}/session-status`,
-          { sessionId },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true,
-          }
-        );
+        if (res.data?.premium) {
+          await refetchUserInfo();
+        }
       } catch (err) {
-        console.log("Payment Verify Error:", err.response?.data || err);
+        console.error("Payment Verify Error:", err.response?.data || err);
       } finally {
         setLoading(false);
       }
     };
 
-    verify();
-  }, [sessionId]);
+    verifyPayment();
+  }, [sessionId, axiosSecure, refetchUserInfo]);
 
   if (loading)
     return (
@@ -44,20 +40,20 @@ const PaymentSuccess = () => {
     );
 
   return (
-    <div className="flex flex-col items-center justify-center mt-16">
-      <div className="bg-white p-10 rounded-lg shadow-lg text-center">
+    <div className="flex flex-col items-center justify-center mt-20">
+      <div className="bg-white p-10 rounded-2xl shadow-xl text-center max-w-md">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Payment Successful 🎉
         </h1>
         <p className="text-gray-600 mb-6">
-          Your premium membership is activated.
+          Your premium membership is now active.
         </p>
 
         <Link
           to="/dashboard/profile"
-          className="inline-block bg-lime-500 text-white font-semibold py-2 px-4 rounded hover:bg-lime-600 transition duration-300"
+          className="inline-block bg-lime-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-lime-600 transition"
         >
-          Go to My Dashboard
+          Go to My Profile
         </Link>
       </div>
     </div>

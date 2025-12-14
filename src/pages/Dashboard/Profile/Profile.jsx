@@ -3,7 +3,6 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useUserInfo from "../../../hooks/useUserInfo";
 import Swal from "sweetalert2";
-import { Link } from "react-router";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -24,6 +23,7 @@ const Profile = () => {
         paymentInfo
       );
 
+      // redirect immediately
       window.location.replace(res.data.url);
     } catch (err) {
       const message =
@@ -38,7 +38,7 @@ const Profile = () => {
     }
   };
 
-  // Check Stripe return status
+  // ✅ Check Stripe return status on profile load
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id");
@@ -47,7 +47,12 @@ const Profile = () => {
       (async () => {
         try {
           await axiosSecure.post("/session-status", { sessionId });
-          refetchUserInfo();
+          await refetchUserInfo(); // wait until updated
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          ); // remove session_id from URL
         } catch (err) {
           console.error("Payment status check failed:", err);
         }
@@ -94,7 +99,6 @@ const Profile = () => {
                 Name
                 <span className="font-bold flex items-center gap-2">
                   {user?.displayName}
-                  {/* ⭐ Premium Badge */}
                   {userInfo?.premium && (
                     <span className="flex items-center gap-1 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs">
                       ⭐ Premium
@@ -115,7 +119,7 @@ const Profile = () => {
             <div className="w-full px-6 mt-4">
               <button
                 onClick={handleSubscribe}
-                disabled={userInfo?.blocked} // disable if blocked
+                disabled={userInfo?.blocked}
                 className={`w-full py-2 rounded-lg text-white font-medium ${
                   userInfo?.blocked
                     ? "bg-gray-400 cursor-not-allowed"
@@ -124,7 +128,7 @@ const Profile = () => {
               >
                 {userInfo?.blocked
                   ? "Subscription Disabled (Blocked)"
-                  : "Subscribe (1000tk = 10$)"}
+                  : "Subscribe 1000tk"}
               </button>
             </div>
           )}

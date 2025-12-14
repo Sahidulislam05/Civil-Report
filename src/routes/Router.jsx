@@ -24,6 +24,7 @@ import PaymentPage from "../pages/Dashboard/Admin/PaymentPage";
 import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
 import BoostSuccess from "../pages/Dashboard/Payment/BoostSuccess";
 import AboutUs from "../pages/About/AboutUs";
+import EditIssuePage from "../pages/Issues/EditIssuePage";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
             <IssueDetails></IssueDetails>
           </PrivateRoutes>
         ),
+      },
+      {
+        path: "edit-issue/:id",
+        Component: EditIssuePage,
       },
       {
         path: "contact",
