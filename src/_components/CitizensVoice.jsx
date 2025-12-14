@@ -1,15 +1,13 @@
-import React from "react";
-
 const CitizensVoice = () => {
   return (
     <div>
-      <section className="py-20 bg-gray-100">
+      <section className="py-20">
         <h2 className="text-3xl font-bold text-center mb-6">Citizens' Voice</h2>
         <p className="text-center text-gray-600 mb-12">
           What our users say about the system
         </p>
 
-        <div className="grid gap-8 grid-cols-1 md:grid-cols-3 max-w-6xl mx-auto px-4">
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-3 w-11/12 mx-auto">
           {[
             {
               name: "Arif Hasan",
