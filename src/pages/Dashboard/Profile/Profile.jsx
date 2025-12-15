@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useUserInfo from "../../../hooks/useUserInfo";
@@ -7,7 +6,7 @@ import Swal from "sweetalert2";
 const Profile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const [userInfo, isLoading, refetchUserInfo] = useUserInfo();
+  const [userInfo, isLoading] = useUserInfo();
 
   const handleSubscribe = async () => {
     try {
@@ -37,28 +36,6 @@ const Profile = () => {
       });
     }
   };
-
-  // ✅ Check Stripe return status on profile load
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
-
-    if (sessionId) {
-      (async () => {
-        try {
-          await axiosSecure.post("/session-status", { sessionId });
-          await refetchUserInfo(); // wait until updated
-          window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname
-          ); // remove session_id from URL
-        } catch (err) {
-          console.error("Payment status check failed:", err);
-        }
-      })();
-    }
-  }, [axiosSecure, refetchUserInfo]);
 
   if (isLoading) {
     return (

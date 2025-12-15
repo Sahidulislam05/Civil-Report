@@ -13,7 +13,12 @@ const ManageStaff = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState(null);
 
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   // Fetch all staff
   const { data: users = [], isLoading } = useQuery({
@@ -102,14 +107,9 @@ const ManageStaff = () => {
 
   const onSubmit = (data) => {
     if (editingStaff) {
-      // Edit existing staff
-      editStaffMutation.mutate({ id: editingStaff._id, data });
+      const { password, ...updateData } = data;
+      editStaffMutation.mutate({ id: editingStaff._id, data: updateData });
     } else {
-      // Add new staff (password required)
-      if (!data.password) {
-        toast.error("Password is required for new staff");
-        return;
-      }
       addStaffMutation.mutate(data);
     }
   };
@@ -192,43 +192,82 @@ const ManageStaff = () => {
             <h3 className="font-bold text-lg mb-4">
               {editingStaff ? "Edit Staff" : "Add New Staff"}
             </h3>
+
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
             >
-              <input
-                type="text"
-                placeholder="Name"
-                {...register("name", { required: true })}
-                className="input input-bordered w-full"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                {...register("email", { required: true })}
-                className="input input-bordered w-full"
-              />
+              {/* Name Field */}
+              <div className="form-control">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  {...register("name", { required: "Name is required" })}
+                  className="input input-bordered w-full"
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-xs">
+                    {errors.name.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Email Field */}
+              <div className="form-control">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  {...register("email", { required: "Email is required" })}
+                  // এডিট করার সময় ইমেইল চেঞ্জ করতে না চাইলে readOnly রাখতে পারেন
+                  readOnly={!!editingStaff}
+                  className="input input-bordered w-full"
+                />
+                {errors.email && (
+                  <span className="text-red-500 text-xs">
+                    {errors.email.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Photo URL */}
               <input
                 type="text"
                 placeholder="Photo URL"
                 {...register("image")}
                 className="input input-bordered w-full"
               />
-              {/* Password for new staff only */}
+
+              {/* Password Field (Only for New Staff) */}
               {!editingStaff && (
-                <input
-                  type="password"
-                  placeholder="Password"
-                  {...register("password", { required: true })}
-                  className="input input-bordered w-full"
-                />
+                <div className="form-control">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Password must be at least 6 characters",
+                      },
+                    })}
+                    className="input input-bordered w-full"
+                  />
+                  {errors.password && (
+                    <span className="text-red-500 text-xs">
+                      {errors.password.message}
+                    </span>
+                  )}
+                </div>
               )}
+
+              {/* Buttons */}
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => {
                     setIsModalOpen(false);
                     setEditingStaff(null);
+                    reset(); // ফর্ম রিসেট করা জরুরি
                   }}
                   className="btn"
                 >
