@@ -26,6 +26,7 @@ import BoostSuccess from "../pages/Dashboard/Payment/BoostSuccess";
 import AboutUs from "../pages/About/AboutUs";
 import EditIssuePage from "../pages/Issues/EditIssuePage";
 import DashboardWelcome from "../pages/Dashboard/DashboardWelcome";
+import AdminRoute from "./AdminRoute";
 
 const router = createBrowserRouter([
   {
@@ -112,7 +113,11 @@ const router = createBrowserRouter([
       // Admin routes
       {
         path: "admin",
-        element: <AdminHome></AdminHome>,
+        element: (
+          <AdminRoute>
+            <AdminHome></AdminHome>
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-users",
