@@ -11,8 +11,8 @@
 ---
 
 ## 🔐 Admin Credentials
-- **Admin Email:** admin@example.com  
-- **Admin Password:** admin123  
+- **Admin Email:**  abc@gmail.com  
+- **Admin Password:** abc@25N#  
 
 ---
 
@@ -23,7 +23,7 @@
 
 ## 📂 GitHub Repositories
 - **Client Repo:** https://github.com/Sahidulislam05/Civil-Report  
-- **Server Repo:** https://github.com/Sahidulislam05/Public-Issue-Server  
+- **Server Repo:** https://github.com/Sahidulislam05/Civil-Report-API 
 
 ---
 
@@ -209,3 +209,4 @@ It simulates how a modern city infrastructure reporting system can work efficien
 
 ✨ **Thank you for reviewing my project!**  
 If you have any questions, feel free to explore the dashboards using the provided credentials.
+
