@@ -66,7 +66,6 @@ const AssignedIssues = () => {
           <option value="">All Status</option>
           <option value="pending">Pending</option>
           <option value="in-progress">In Progress</option>
-          <option value="working">Working</option>
           <option value="resolved">Resolved</option>
           <option value="closed">Closed</option>
         </select>
@@ -138,7 +137,7 @@ const AssignedIssues = () => {
                   </td>
                   <td>
                     <Link
-                      to={`/issues/${issue._id}`}
+                      to={`/issues-details/${issue._id}`}
                       className="btn btn-square btn-sm btn-ghost"
                     >
                       <FaEye className="text-primary" />

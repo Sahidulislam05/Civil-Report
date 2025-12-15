@@ -126,7 +126,7 @@ const AdminHome = () => {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <div className=" mb-12">
         <div className="card bg-base-100 shadow-xl p-6">
           <h3 className="text-xl font-bold mb-4">Issue Status Distribution</h3>
           <div className="h-64">
@@ -153,13 +153,6 @@ const AdminHome = () => {
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl p-6">
-          <h3 className="text-xl font-bold mb-4">Activity Log (Coming Soon)</h3>
-          <p className="text-gray-400 text-center py-10">
-            Daily submission chart will be here.
-          </p>
         </div>
       </div>
 

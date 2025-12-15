@@ -141,7 +141,7 @@ const DashboardLayout = () => {
           {/* Branding */}
           <div className="mb-8 px-4">
             <Link
-              to="/"
+              to="/dashboard"
               className="text-2xl font-headings font-bold text-white"
             >
               Civil<span className="text-primary ml-1">Report</span>

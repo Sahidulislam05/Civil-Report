@@ -25,6 +25,7 @@ import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
 import BoostSuccess from "../pages/Dashboard/Payment/BoostSuccess";
 import AboutUs from "../pages/About/AboutUs";
 import EditIssuePage from "../pages/Issues/EditIssuePage";
+import DashboardWelcome from "../pages/Dashboard/DashboardWelcome";
 
 const router = createBrowserRouter([
   {
@@ -89,7 +90,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        //  <Statistics />
+        Component: DashboardWelcome,
       },
       {
         path: "citizen",
