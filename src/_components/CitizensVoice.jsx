@@ -2,8 +2,10 @@ const CitizensVoice = () => {
   return (
     <div>
       <section className="py-20">
-        <h2 className="text-3xl font-bold text-center mb-6">Citizens' Voice</h2>
-        <p className="text-center text-gray-600 mb-12">
+        <h2 className="text-3xl font-bold text-center mb-6 text-primary">
+          Citizens' Voice
+        </h2>
+        <p className="text-center text-gray-500 mb-12">
           What our users say about the system
         </p>
 
@@ -31,7 +33,7 @@ const CitizensVoice = () => {
             >
               <div className="flex items-center gap-4 mb-3">
                 <img src={t.img} className="w-14 h-14 rounded-full" />
-                <h3 className="font-bold">{t.name}</h3>
+                <h3 className="font-bold text-primary">{t.name}</h3>
               </div>
               <p className="text-gray-600">{t.text}</p>
               <p className="text-yellow-500 mt-2">★★★★★</p>

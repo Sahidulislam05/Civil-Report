@@ -110,7 +110,7 @@ export default function IssueDetails() {
   const canEdit = isOwner && issue.status === "pending";
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12 mt-16">
+    <div className="max-w-6xl mx-auto px-4 py-12 mt-2">
       {/* ================= ISSUE CARD ================= */}
       <div className="bg-white shadow-xl rounded-xl p-6 mb-10">
         <div className="flex justify-between items-start">

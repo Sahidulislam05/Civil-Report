@@ -1,10 +1,10 @@
-import React from "react";
+
 
 const Impact = () => {
   return (
     <div>
       <section className="py-16 bg-white">
-        <h2 className="text-3xl font-bold text-center mb-10">
+        <h2 className="text-3xl font-bold text-center mb-10 text-primary">
           Our Impact & Achievements
         </h2>
 

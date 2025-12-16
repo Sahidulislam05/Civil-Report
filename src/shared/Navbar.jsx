@@ -1,10 +1,25 @@
 import { FaRegArrowAltCircleRight } from "react-icons/fa";
 import { Link, NavLink } from "react-router";
 import useAuth from "../hooks/useAuth";
-// import logo from "../../public/logo.svg";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
+
+  // scroll based animation
+  const { scrollY } = useScroll();
+  const bgOpacity = useTransform(scrollY, [0, 120], [0.55, 0.85]);
+  const blurValue = useTransform(
+    scrollY,
+    [0, 120],
+    ["blur(8px)", "blur(16px)"]
+  );
+  const shadowValue = useTransform(
+    scrollY,
+    [0, 120],
+    ["0 0 0 rgba(0,0,0,0)", "0 8px 30px rgba(0,0,0,0.25)"]
+  );
+
   const getDashboardLink = () => {
     if (!user) return "/";
     if (user.role === "admin") return "/dashboard/admin";
@@ -15,147 +30,158 @@ const Navbar = () => {
 
   const navOptions = (
     <>
-      <li>
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            isActive ? "font-bold text-primary" : ""
-          }
-        >
-          Home
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/all-issues"
-          className={({ isActive }) =>
-            isActive ? "font-bold text-primary" : ""
-          }
-        >
-          All Issues
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/about-us"
-          className={({ isActive }) =>
-            isActive ? "font-bold text-primary" : ""
-          }
-        >
-          About Us
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/contact"
-          className={({ isActive }) =>
-            isActive ? "font-bold text-primary" : ""
-          }
-        >
-          Contact
-        </NavLink>
-      </li>
+      {[
+        { to: "/", label: "Home" },
+        { to: "/all-issues", label: "All Issues" },
+        { to: "/about-us", label: "About Us" },
+        { to: "/contact", label: "Contact" },
+      ].map((item) => (
+        <li key={item.to}>
+          <NavLink
+            to={item.to}
+            className={({ isActive }) =>
+              `transition-all ${
+                isActive ? "font-bold text-primary" : "hover:text-primary"
+              }`
+            }
+          >
+            {item.label}
+          </NavLink>
+        </li>
+      ))}
     </>
   );
 
   return (
-    <section>
-      <nav className="bg-base-300 fixed top-0 left-0 w-full z-10">
-        <div className="navbar w-11/12 mx-auto ">
-          <div className="navbar-start ">
-            <div className="dropdown">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost lg:hidden"
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      style={{
+        backgroundColor: bgOpacity,
+        backdropFilter: blurValue,
+        boxShadow: shadowValue,
+      }}
+      className="
+        sticky top-0 z-50 w-full
+        bg-base-100/60
+        border-b border-white/10
+        supports-backdrop-filter:bg-base-100/40
+      "
+    >
+      <div className="navbar w-11/12 mx-auto">
+        {/* LEFT */}
+        <div className="navbar-start">
+          {/* Mobile menu */}
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h8m-8 6h16"
-                  />
-                </svg>
-              </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                {navOptions}
-              </ul>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h8m-8 6h16"
+                />
+              </svg>
             </div>
-            <Link
-              to="/"
-              className="flex items-center gap-2 md:text-2xl font-headings font-bold text-primary"
+
+            {/* Mobile dropdown glass */}
+            <ul
+              tabIndex={0}
+              className="
+                menu menu-sm dropdown-content mt-3 z-50 p-3
+                backdrop-blur-xl bg-base-100/80
+                border border-white/10
+                rounded-xl shadow-xl w-56
+              "
             >
-              <img className="w-7" src="/logo.svg" alt="Logo" />
-              <p>
-                Civil<span className="text-secondary"> Report</span>
-              </p>
-            </Link>
-          </div>
-          <div className="navbar-center hidden lg:flex">
-            <ul className="menu menu-horizontal px-1 gap-4 font-medium">
               {navOptions}
             </ul>
           </div>
-          <div className="navbar-end">
-            {user ? (
-              <div className="dropdown dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost btn-circle avatar border border-primary/20"
-                >
-                  <div className="w-10 rounded-full">
-                    <img alt="User" src={user?.photoURL} />
-                  </div>
-                </div>
-                <ul
-                  tabIndex={0}
-                  className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-52 border border-gray-100"
-                >
-                  <li className="menu-title px-4 py-2 text-primary">
-                    {user?.displayName}
-                  </li>
-                  <li>
-                    <Link
-                      className="menu-title px-4 py-2 text-secondary"
-                      to={getDashboardLink()}
-                    >
-                      <p className="flex gap-2 items-center">
-                        <FaRegArrowAltCircleRight /> <span>Dashboard</span>
-                      </p>
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      className="btn btn-secondary font-bold"
-                      onClick={logOut}
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                <Link to="/login" className="btn btn-sm btn-primary text-white">
-                  Login
-                </Link>
-              </div>
-            )}
-          </div>
+
+          {/* Logo */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-xl md:text-2xl font-bold text-primary"
+          >
+            <img className="w-7" src="/logo.svg" alt="Logo" />
+            <p>
+              Civil<span className="text-secondary"> Report</span>
+            </p>
+          </Link>
         </div>
-      </nav>
-    </section>
+
+        {/* CENTER */}
+        <div className="navbar-center hidden lg:flex">
+          <ul className="menu menu-horizontal gap-6 font-medium">
+            {navOptions}
+          </ul>
+        </div>
+
+        {/* RIGHT */}
+        <div className="navbar-end">
+          {user ? (
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="
+                  btn btn-ghost btn-circle avatar
+                  border border-primary/20
+                  hover:scale-105 transition
+                "
+              >
+                <div className="w-10 rounded-full">
+                  <img alt="User" src={user?.photoURL} />
+                </div>
+              </div>
+
+              {/* Profile dropdown glass */}
+              <ul
+                tabIndex={0}
+                className="
+                  menu menu-sm dropdown-content mt-3 z-50 p-3
+                  backdrop-blur-xl bg-base-100/90
+                  border border-white/10
+                  rounded-xl shadow-xl w-56
+                "
+              >
+                <li className="menu-title px-4 py-2 text-primary">
+                  {user?.displayName}
+                </li>
+                <li>
+                  <Link
+                    to={getDashboardLink()}
+                    className="flex items-center gap-2 px-4 py-2 text-secondary"
+                  >
+                    <FaRegArrowAltCircleRight />
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={logOut}
+                    className="btn btn-secondary btn-sm mt-2"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <Link to="/login" className="btn btn-sm btn-primary text-white">
+              Login
+            </Link>
+          )}
+        </div>
+      </div>
+    </motion.nav>
   );
 };
 

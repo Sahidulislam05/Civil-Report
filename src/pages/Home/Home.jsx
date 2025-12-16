@@ -8,7 +8,7 @@ import LatestResolve from "../../components/LatestResolve";
 
 const Home = () => {
   return (
-    <div className="mt-16">
+    <div className="mt-1">
       <div className="w-11/12 mx-auto space-y-16">
         {/* Banner Section */}
         <motion.div

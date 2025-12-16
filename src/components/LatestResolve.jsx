@@ -6,7 +6,7 @@ const LatestResolve = () => {
 
   return (
     <section className="my-12 px-4 md:px-8">
-      <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-12 text-center">
+      <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-12 text-center">
         Latest Resolved Issues
       </h2>
 
