@@ -50,7 +50,7 @@ const ReportIssue = () => {
         title: "Issue Submitted",
         text: "Your issue has been reported successfully!",
       });
-      navigate("/my-issues");
+      navigate("/dashboard/my-issues");
     },
   });
 
