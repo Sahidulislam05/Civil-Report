@@ -119,9 +119,7 @@ const Navbar = () => {
 
         {/* CENTER */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal gap-6 font-medium">
-            {navOptions}
-          </ul>
+          <ul className="menu-horizontal gap-6 font-medium">{navOptions}</ul>
         </div>
 
         {/* RIGHT */}

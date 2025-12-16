@@ -90,10 +90,10 @@ export default function AllIssues() {
               }}
             >
               <option value="">All Categories</option>
-              <option value="pothole">Pothole</option>
-              <option value="streetlight">Streetlight</option>
-              <option value="garbage">Garbage</option>
-              <option value="water-leak">Water Leak</option>
+              <option value="Pothole">Pothole</option>
+              <option value="Street Light">Street Light</option>
+              <option value="Garbage">Garbage</option>
+              <option value="Water Leakage">Water Leakage</option>
             </select>
 
             <select
