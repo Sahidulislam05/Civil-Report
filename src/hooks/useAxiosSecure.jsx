@@ -29,9 +29,9 @@ const useAxiosSecure = () => {
           if (err?.response?.status === 401) {
             logOut()
               .then(() => {
-                console.log("Logged out successfully.");
+                // console.log("Logged out successfully.");
               })
-              .catch(console.error);
+              // .catch(console.error);
             navigate("/login");
           }
           return Promise.reject(err);

@@ -20,11 +20,11 @@ const Profile = () => {
         const res = await axiosSecure.get("/my-payments");
         setPayments(res.data);
       } catch (err) {
-        console.error(
-          "Failed to load payments:",
-          err.response?.status,
-          err.response?.data
-        );
+        // console.error(
+        //   "Failed to load payments:",
+        //   err.response?.status,
+        //   err.response?.data
+        // );
 
         Swal.fire({
           icon: "error",
@@ -81,12 +81,12 @@ const Profile = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Invoice download failed:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Download Failed",
-        text: "Could not download invoice",
-      });
+      // console.error("Invoice download failed:", err);
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Download Failed",
+      //   text: "Could not download invoice",
+      // });
     }
   };
 

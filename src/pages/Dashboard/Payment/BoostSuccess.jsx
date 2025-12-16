@@ -37,7 +37,7 @@ const BoostSuccess = () => {
           setSuccess(false);
         }
       } catch (err) {
-        console.log("Payment Verify Error:", err.response?.data || err);
+        // console.log("Payment Verify Error:", err.response?.data || err);
         setSuccess(false);
       } finally {
         setLoading(false);
@@ -47,7 +47,7 @@ const BoostSuccess = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) verifyPayment(user);
       else {
-        console.log("User not logged in!");
+        // console.log("User not logged in!");
         setLoading(false);
         setSuccess(false);
       }

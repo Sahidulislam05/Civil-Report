@@ -21,7 +21,7 @@ const SocialLogin = () => {
       toast.success("Login Successful!");
       navigate(from, { replace: true });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error(error.message || "Google Sign In Failed");
     }
   };

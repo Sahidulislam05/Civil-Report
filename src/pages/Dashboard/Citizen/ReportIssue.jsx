@@ -72,7 +72,7 @@ const ReportIssue = () => {
 
       // timeline added in backend already
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setUploading(false);
     }

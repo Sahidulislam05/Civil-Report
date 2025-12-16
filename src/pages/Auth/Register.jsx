@@ -26,7 +26,7 @@ const Register = () => {
       toast.success("Signup Successful!");
       navigate(from, { replace: true });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.code || "Signup Failed!");
     }
   };

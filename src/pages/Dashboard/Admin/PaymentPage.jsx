@@ -81,7 +81,7 @@ const PaymentPage = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     }
   };
 

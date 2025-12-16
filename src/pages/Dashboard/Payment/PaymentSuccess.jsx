@@ -17,13 +17,13 @@ const PaymentSuccess = () => {
 
       try {
         const res = await axiosSecure.post("/session-status", { sessionId });
-        console.log("Payment verified:", res.data);
+        // console.log("Payment verified:", res.data);
 
         if (res.data?.premium) {
           await refetchUserInfo();
         }
       } catch (err) {
-        console.error("Payment Verify Error:", err.response?.data || err);
+        // console.error("Payment Verify Error:", err.response?.data || err);
       } finally {
         setLoading(false);
       }
