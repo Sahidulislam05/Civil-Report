@@ -12,7 +12,7 @@ export const imageUpload = async (imageData) => {
       formData
     );
 
-    console.log("IMGBB Response:", data);
+    // console.log("IMGBB Response:", data);
 
     if (data?.success) {
       return data.data.display_url;
