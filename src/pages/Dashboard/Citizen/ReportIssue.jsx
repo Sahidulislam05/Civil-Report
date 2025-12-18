@@ -79,46 +79,68 @@ const ReportIssue = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-base-100 rounded-xl shadow-xl mt-8">
-      <h2 className="text-3xl font-bold mb-6 text-primary">Report an Issue</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+  <div className="min-h-screen flex items-center justify-center px-4 py-10">
+    <div className="w-full max-w-3xl bg-base-100 rounded-2xl shadow-2xl overflow-hidden">
+      
+      {/* Header */}
+      <div className="bg-gradient-to-r from-primary to-secondary p-6 text-white">
+        <h2 className="text-3xl font-bold">Report an Issue</h2>
+        <p className="text-sm opacity-90 mt-1">
+          Help us improve your area by reporting issues
+        </p>
+      </div>
+
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="p-6 md:p-8 space-y-6"
+      >
         {/* Title */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Title</span>
-          </label>
+        <div>
+          <label className="block mb-1 font-medium">Title</label>
           <input
             type="text"
-            className="input input-bordered"
+            placeholder="e.g. Broken street light"
+            className={`input input-bordered w-full ${
+              errors.title ? "input-error" : ""
+            }`}
             {...register("title", { required: true })}
           />
-          {errors.title && <p className="text-error">Title is required</p>}
+          {errors.title && (
+            <p className="text-error text-sm mt-1">
+              Title is required
+            </p>
+          )}
         </div>
 
         {/* Description */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Description</span>
-          </label>
+        <div>
+          <label className="block mb-1 font-medium">Description</label>
           <textarea
-            className="textarea textarea-bordered h-28"
+            placeholder="Describe the issue clearly..."
+            className={`textarea textarea-bordered w-full h-32 ${
+              errors.description ? "textarea-error" : ""
+            }`}
             {...register("description", { required: true })}
-          ></textarea>
+          />
           {errors.description && (
-            <p className="text-error">Description is required</p>
+            <p className="text-error text-sm mt-1">
+              Description is required
+            </p>
           )}
         </div>
 
         {/* Category & Location */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Category</span>
-            </label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label className="block mb-1 font-medium">Category</label>
             <select
               className="select select-bordered w-full"
               {...register("category", { required: true })}
             >
+              <option disabled value="">
+                Select category
+              </option>
               <option value="Street Light">Street Light</option>
               <option value="Pothole">Pothole</option>
               <option value="Water Leakage">Water Leakage</option>
@@ -127,45 +149,62 @@ const ReportIssue = () => {
               <option value="Other">Other</option>
             </select>
           </div>
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Location</span>
-            </label>
+
+          <div>
+            <label className="block mb-1 font-medium">Location</label>
             <input
               type="text"
-              className="input input-bordered"
+              placeholder="e.g. Dhanmondi, Road 32"
+              className={`input input-bordered w-full ${
+                errors.location ? "input-error" : ""
+              }`}
               {...register("location", { required: true })}
             />
             {errors.location && (
-              <p className="text-error">Location is required</p>
+              <p className="text-error text-sm mt-1">
+                Location is required
+              </p>
             )}
           </div>
         </div>
 
-        {/* Image */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Evidence (Photo)</span>
+        {/* Image Upload */}
+        <div>
+          <label className="block mb-1 font-medium">
+            Evidence (Photo)
           </label>
           <input
             type="file"
             accept="image/*"
-            className="file-input file-input-bordered w-full"
+            className={`file-input file-input-bordered w-full ${
+              errors.image ? "file-input-error" : ""
+            }`}
             {...register("image", { required: true })}
           />
-          {errors.image && <p className="text-error">Image is required</p>}
+          {errors.image && (
+            <p className="text-error text-sm mt-1">
+              Image is required
+            </p>
+          )}
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
-          className="btn btn-primary w-full"
           disabled={uploading || isPending}
+          className="btn btn-primary w-full text-lg tracking-wide shadow-md hover:shadow-xl transition-all"
         >
-          {uploading || isPending ? "Submitting..." : "Submit Report"}
+          {uploading || isPending ? (
+            <span className="loading loading-spinner loading-sm"></span>
+          ) : (
+            "Submit Report"
+          )}
         </button>
       </form>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default ReportIssue;
