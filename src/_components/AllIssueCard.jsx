@@ -68,7 +68,7 @@ export default function AllIssueCard({ issue }) {
   };
 
   return (
-    <div className="card bg-base-100 w-96 shadow-md hover:shadow-xl transition rounded-xl overflow-hidden flex flex-col">
+    <div className="card bg-base-100 shadow-md hover:shadow-xl transition rounded-xl overflow-hidden flex flex-col">
       {issue.image && (
         <figure>
           <img
