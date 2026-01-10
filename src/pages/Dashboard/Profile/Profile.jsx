@@ -143,17 +143,26 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Subscribe Button */}
+          {/* Edit Profile Button */}
+          <div className="w-full px-6 mt-4">
+            <button
+              onClick={() => document.getElementById("edit_profile_modal").showModal()}
+              className="btn btn-outline w-full"
+            >
+              Edit Profile
+            </button>
+          </div>
+
+          {/* Existing Subscribe Button */}
           {!userInfo?.premium && (
-            <div className="w-full px-6 mt-6">
+            <div className="w-full px-6 mt-4">
               <button
                 onClick={handleSubscribe}
                 disabled={userInfo?.blocked}
-                className={`w-full py-2 rounded-lg text-white ${
-                  userInfo?.blocked
+                className={`w-full py-2 rounded-lg text-white ${userInfo?.blocked
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-800"
-                }`}
+                  }`}
               >
                 Subscribe 1000tk
               </button>
@@ -161,6 +170,44 @@ const Profile = () => {
           )}
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      <dialog id="edit_profile_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Edit Profile</h3>
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          </form>
+
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const name = e.target.name.value;
+              const photoURL = e.target.photoURL.value;
+              // Add update logic here (call API to update user)
+              // For now just console log or basic toast and close
+              // In real app, call updateUser(name, photoURL) context function
+              Swal.fire({
+                icon: 'info',
+                title: 'Update Feature',
+                text: 'Profile update logic would go here (requires backend endpoint)'
+              });
+              document.getElementById("edit_profile_modal").close();
+            }}
+            className="py-4 space-y-4"
+          >
+            <div className="form-control">
+              <label className="label">Name</label>
+              <input name="name" type="text" defaultValue={user?.displayName} className="input input-bordered w-full" />
+            </div>
+            <div className="form-control">
+              <label className="label">Photo URL</label>
+              <input name="photoURL" type="text" defaultValue={user?.photoURL} className="input input-bordered w-full" />
+            </div>
+            <button type="submit" className="btn btn-primary w-full">Update</button>
+          </form>
+        </div>
+      </dialog>
     </div>
   );
 };

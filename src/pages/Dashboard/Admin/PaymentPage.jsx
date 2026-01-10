@@ -15,6 +15,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { FaMoneyBillWave, FaUsers, FaDownload } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const PaymentPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -82,6 +83,9 @@ const PaymentPage = () => {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       // console.error(err);
+      toast.error("Failed to download invoice. Please try again later.", {
+        id: "invoice-error",
+      });
     }
   };
 
@@ -93,19 +97,19 @@ const PaymentPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100 p-4">
+        <div className="stat bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-100 dark:border-gray-700 p-4">
           <div className="stat-figure text-primary text-3xl">
             <FaMoneyBillWave />
           </div>
-          <div className="stat-title">Total Revenue</div>
+          <div className="stat-title dark:text-gray-400">Total Revenue</div>
           <div className="stat-value text-primary">{stats.totalRevenue} tk</div>
         </div>
 
-        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100 p-4">
+        <div className="stat bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-100 dark:border-gray-700 p-4">
           <div className="stat-figure text-secondary text-3xl">
             <FaUsers />
           </div>
-          <div className="stat-title">Total Payments</div>
+          <div className="stat-title dark:text-gray-400">Total Payments</div>
           <div className="stat-value text-secondary">{stats.totalPayments}</div>
         </div>
       </div>
@@ -117,7 +121,7 @@ const PaymentPage = () => {
           placeholder="Search by email or type..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="input input-bordered w-full max-w-md"
+          className="input input-bordered w-full max-w-md dark:bg-gray-700 dark:text-white dark:border-gray-600"
         />
       </div>
 
@@ -125,10 +129,10 @@ const PaymentPage = () => {
       {isLoading ? (
         <span className="loading loading-spinner"></span>
       ) : (
-        <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg border border-gray-100 mb-8">
+        <div className="overflow-x-auto bg-base-100 dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 mb-8">
           <table className="table w-full">
             <thead>
-              <tr className="bg-gray-50">
+              <tr className="bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                 <th>Email</th>
                 <th>Amount</th>
                 <th>Type</th>
@@ -137,9 +141,9 @@ const PaymentPage = () => {
                 <th>Invoice</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="dark:text-gray-300">
               {filteredPayments.map((p) => (
-                <tr key={p._id}>
+                <tr key={p._id} className="border-b dark:border-gray-700">
                   <td>{p.email}</td>
                   <td>{p.amount} tk</td>
                   <td className="capitalize">{p.type}</td>
@@ -163,8 +167,8 @@ const PaymentPage = () => {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Pie Chart: Payment Type Distribution */}
-        <div className="card bg-base-100 shadow-xl p-6">
-          <h3 className="text-xl font-bold mb-4">Payment Type Distribution</h3>
+        <div className="card bg-base-100 dark:bg-gray-800 shadow-xl p-6">
+          <h3 className="text-xl font-bold mb-4 dark:text-gray-200">Payment Type Distribution</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -190,7 +194,9 @@ const PaymentPage = () => {
                     />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#1F2937', color: '#fff' }}
+                />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -198,18 +204,20 @@ const PaymentPage = () => {
         </div>
 
         {/* Bar Chart: Monthly Revenue */}
-        <div className="card bg-base-100 shadow-xl p-6">
-          <h3 className="text-xl font-bold mb-4">Monthly Revenue</h3>
+        <div className="card bg-base-100 dark:bg-gray-800 shadow-xl p-6">
+          <h3 className="text-xl font-bold mb-4 dark:text-gray-200">Monthly Revenue</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={monthlyRevenue}
                 margin={{ top: 20, right: 20, left: -10, bottom: 20 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis dataKey="month" stroke="#9CA3AF" />
+                <YAxis stroke="#9CA3AF" />
+                <Tooltip
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#1F2937', color: '#fff' }}
+                />
                 <Bar dataKey="revenue" fill="#0088FE" />
               </BarChart>
             </ResponsiveContainer>

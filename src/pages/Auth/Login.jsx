@@ -10,6 +10,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -100,6 +101,30 @@ const Login = () => {
           >
             Login
           </button>
+
+          {/* Demo Login */}
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setValue("email", "citizen@demo.com");
+                setValue("password", "123456");
+              }}
+              className="btn btn-accent btn-outline btn-sm"
+            >
+              Demo Citizen
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setValue("email", "admin@demo.com");
+                setValue("password", "123456");
+              }}
+              className="btn btn-secondary btn-outline btn-sm"
+            >
+              Demo Admin
+            </button>
+          </div>
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-6">

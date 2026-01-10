@@ -79,132 +79,120 @@ const ReportIssue = () => {
   };
 
   return (
-  <div className="min-h-screen flex items-center justify-center px-4 py-10">
-    <div className="w-full max-w-3xl bg-base-100 rounded-2xl shadow-2xl overflow-hidden">
-      
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-secondary p-6 text-white">
-        <h2 className="text-3xl font-bold">Report an Issue</h2>
-        <p className="text-sm opacity-90 mt-1">
-          Help us improve your area by reporting issues
-        </p>
-      </div>
-
-      {/* Form */}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="p-6 md:p-8 space-y-6"
-      >
-        {/* Title */}
-        <div>
-          <label className="block mb-1 font-medium">Title</label>
-          <input
-            type="text"
-            placeholder="e.g. Broken street light"
-            className={`input input-bordered w-full ${
-              errors.title ? "input-error" : ""
-            }`}
-            {...register("title", { required: true })}
-          />
-          {errors.title && (
-            <p className="text-error text-sm mt-1">
-              Title is required
-            </p>
-          )}
+    <div className="min-h-screen flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-3xl bg-base-100 rounded-2xl shadow-2xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-linear-to-r from-primary to-secondary p-6 text-white">
+          <h2 className="text-3xl font-bold">Report an Issue</h2>
+          <p className="text-sm opacity-90 mt-1">
+            Help us improve your area by reporting issues
+          </p>
         </div>
 
-        {/* Description */}
-        <div>
-          <label className="block mb-1 font-medium">Description</label>
-          <textarea
-            placeholder="Describe the issue clearly..."
-            className={`textarea textarea-bordered w-full h-32 ${
-              errors.description ? "textarea-error" : ""
-            }`}
-            {...register("description", { required: true })}
-          />
-          {errors.description && (
-            <p className="text-error text-sm mt-1">
-              Description is required
-            </p>
-          )}
-        </div>
-
-        {/* Category & Location */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="p-6 md:p-8 space-y-6"
+        >
+          {/* Title */}
           <div>
-            <label className="block mb-1 font-medium">Category</label>
-            <select
-              className="select select-bordered w-full"
-              {...register("category", { required: true })}
-            >
-              <option disabled value="">
-                Select category
-              </option>
-              <option value="Street Light">Street Light</option>
-              <option value="Pothole">Pothole</option>
-              <option value="Water Leakage">Water Leakage</option>
-              <option value="Garbage">Garbage</option>
-              <option value="Footpath">Footpath</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Location</label>
+            <label className="block mb-1 font-medium">Title</label>
             <input
               type="text"
-              placeholder="e.g. Dhanmondi, Road 32"
+              placeholder="e.g. Broken street light"
               className={`input input-bordered w-full ${
-                errors.location ? "input-error" : ""
+                errors.title ? "input-error" : ""
               }`}
-              {...register("location", { required: true })}
+              {...register("title", { required: true })}
             />
-            {errors.location && (
-              <p className="text-error text-sm mt-1">
-                Location is required
-              </p>
+            {errors.title && (
+              <p className="text-error text-sm mt-1">Title is required</p>
             )}
           </div>
-        </div>
 
-        {/* Image Upload */}
-        <div>
-          <label className="block mb-1 font-medium">
-            Evidence (Photo)
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            className={`file-input file-input-bordered w-full ${
-              errors.image ? "file-input-error" : ""
-            }`}
-            {...register("image", { required: true })}
-          />
-          {errors.image && (
-            <p className="text-error text-sm mt-1">
-              Image is required
-            </p>
-          )}
-        </div>
+          {/* Description */}
+          <div>
+            <label className="block mb-1 font-medium">Description</label>
+            <textarea
+              placeholder="Describe the issue clearly..."
+              className={`textarea textarea-bordered w-full h-32 ${
+                errors.description ? "textarea-error" : ""
+              }`}
+              {...register("description", { required: true })}
+            />
+            {errors.description && (
+              <p className="text-error text-sm mt-1">Description is required</p>
+            )}
+          </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={uploading || isPending}
-          className="btn btn-primary w-full text-lg tracking-wide shadow-md hover:shadow-xl transition-all"
-        >
-          {uploading || isPending ? (
-            <span className="loading loading-spinner loading-sm"></span>
-          ) : (
-            "Submit Report"
-          )}
-        </button>
-      </form>
+          {/* Category & Location */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block mb-1 font-medium">Category</label>
+              <select
+                className="select select-bordered w-full"
+                {...register("category", { required: true })}
+              >
+                <option disabled value="">
+                  Select category
+                </option>
+                <option value="Street Light">Street Light</option>
+                <option value="Pothole">Pothole</option>
+                <option value="Water Leakage">Water Leakage</option>
+                <option value="Garbage">Garbage</option>
+                <option value="Footpath">Footpath</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium">Location</label>
+              <input
+                type="text"
+                placeholder="e.g. Dhanmondi, Road 32"
+                className={`input input-bordered w-full ${
+                  errors.location ? "input-error" : ""
+                }`}
+                {...register("location", { required: true })}
+              />
+              {errors.location && (
+                <p className="text-error text-sm mt-1">Location is required</p>
+              )}
+            </div>
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block mb-1 font-medium">Evidence (Photo)</label>
+            <input
+              type="file"
+              accept="image/*"
+              className={`file-input file-input-bordered w-full ${
+                errors.image ? "file-input-error" : ""
+              }`}
+              {...register("image", { required: true })}
+            />
+            {errors.image && (
+              <p className="text-error text-sm mt-1">Image is required</p>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={uploading || isPending}
+            className="btn btn-primary w-full text-lg tracking-wide shadow-md hover:shadow-xl transition-all"
+          >
+            {uploading || isPending ? (
+              <span className="loading loading-spinner loading-sm"></span>
+            ) : (
+              "Submit Report"
+            )}
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 export default ReportIssue;

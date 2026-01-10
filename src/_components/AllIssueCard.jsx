@@ -28,10 +28,10 @@ export default function AllIssueCard({ issue }) {
           issues: old.issues.map((i) =>
             i._id === issue._id
               ? {
-                  ...i,
-                  upvoteCount: (i.upvoteCount || 0) + 1,
-                  upvotes: [...(i.upvotes || []), user.email],
-                }
+                ...i,
+                upvoteCount: (i.upvoteCount || 0) + 1,
+                upvotes: [...(i.upvotes || []), user.email],
+              }
               : i
           ),
         };
@@ -68,7 +68,7 @@ export default function AllIssueCard({ issue }) {
   };
 
   return (
-    <div className="card bg-base-100 w-96 shadow-md hover:shadow-xl transition rounded-xl overflow-hidden flex flex-col">
+    <div className="card bg-base-100 w-full hover:shadow-xl transition shadow-md rounded-xl overflow-hidden flex flex-col h-full">
       {issue.image && (
         <figure>
           <img
@@ -86,15 +86,15 @@ export default function AllIssueCard({ issue }) {
           </span>
         )}
 
-        <h2 className="card-title text-lg font-bold line-clamp-2">
+        <h2 className="card-title text-lg font-bold line-clamp-2 text-base-content">
           {issue.title}
         </h2>
-        <p className="text-gray-500 text-sm line-clamp-3 mt-1">
+        <p className="text-base-content/70 text-sm line-clamp-3 mt-1">
           {issue.description || "No description provided."}
         </p>
 
         <div className="flex flex-wrap gap-2 mt-3">
-          <span className="badge badge-outline">
+          <span className="badge badge-outline text-base-content/80">
             {issue.category || "General"}
           </span>
           <span className="badge badge-info">{issue.status}</span>
@@ -103,7 +103,7 @@ export default function AllIssueCard({ issue }) {
           </span>
         </div>
 
-        <div className="mt-4 flex justify-between text-sm text-gray-600">
+        <div className="mt-4 flex justify-between text-sm text-base-content/60">
           <span>Upvotes: {issue.upvoteCount || 0}</span>
           <span>{new Date(issue.createdAt).toLocaleDateString("en-US")}</span>
         </div>
@@ -112,9 +112,8 @@ export default function AllIssueCard({ issue }) {
           <button
             onClick={handleUpvote}
             disabled={upvoteMutation.isLoading || hasUpvoted}
-            className={`btn btn-sm flex-1 gap-2 ${
-              hasUpvoted ? "btn-disabled" : "btn-outline"
-            }`}
+            className={`btn btn-sm flex-1 gap-2 ${hasUpvoted ? "btn-disabled" : "btn-outline"
+              }`}
           >
             <FaArrowUp /> {issue.upvoteCount || 0}
           </button>

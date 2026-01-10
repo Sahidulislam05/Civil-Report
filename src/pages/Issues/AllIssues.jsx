@@ -4,22 +4,25 @@ import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import AllIssueCard from "../../_components/AllIssueCard";
 import { motion } from "framer-motion";
+import CardSkeleton from "../../components/CardSkeleton";
 export default function AllIssues() {
   const [status, setStatus] = useState("");
   const [category, setCategory] = useState("");
   const [priority, setPriority] = useState("");
+  const [sort, setSort] = useState("newest");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const limit = 9;
 
   const { data, isLoading } = useQuery({
-    queryKey: ["all-issues", status, category, priority, search, page],
+    queryKey: ["all-issues", status, category, priority, search, sort, page],
     queryFn: async () => {
       const params = new URLSearchParams({
         status,
         category,
         priority,
         search,
+        sort,
         page,
         limit,
       });
@@ -33,12 +36,13 @@ export default function AllIssues() {
   });
 
   return (
-    <div className="py-12 bg-gray-50 min-h-screen mt-1">
+    <div className="py-12 bg-base-200 min-h-screen mt-1">
       {/* Citizens Voice Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
       >
         <div className="container mx-auto px-4">
           {/* Header */}
@@ -50,7 +54,7 @@ export default function AllIssues() {
             {/* Search */}
             <div className="join">
               <input
-                className="input input-bordered join-item w-64"
+                className="input input-bordered join-item w-64 bg-base-100"
                 placeholder="Search by title..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -65,9 +69,9 @@ export default function AllIssues() {
           </div>
 
           {/* Filters */}
-          <div className="bg-white p-4 rounded-lg shadow mb-8 flex flex-wrap gap-4">
+          <div className="bg-base-100 p-4 rounded-lg shadow mb-8 flex flex-wrap gap-4">
             <select
-              className="select select-bordered select-sm"
+              className="select select-bordered select-sm bg-base-100"
               value={status}
               onChange={(e) => {
                 setStatus(e.target.value);
@@ -82,7 +86,7 @@ export default function AllIssues() {
             </select>
 
             <select
-              className="select select-bordered select-sm"
+              className="select select-bordered select-sm bg-base-100"
               value={category}
               onChange={(e) => {
                 setCategory(e.target.value);
@@ -97,7 +101,7 @@ export default function AllIssues() {
             </select>
 
             <select
-              className="select select-bordered select-sm"
+              className="select select-bordered select-sm bg-base-100"
               value={priority}
               onChange={(e) => {
                 setPriority(e.target.value);
@@ -108,24 +112,52 @@ export default function AllIssues() {
               <option value="high">High (Boosted)</option>
               <option value="normal">Normal</option>
             </select>
+
+            <select
+              className="select select-bordered select-sm bg-base-100"
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="votes">Most Voted</option>
+            </select>
           </div>
 
           {/* Content */}
           {isLoading ? (
-            <div className="flex justify-center py-20">
-              <span className="loading loading-spinner loading-lg text-primary" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(8)].map((_, i) => (
+                <CardSkeleton key={i} />
+              ))}
             </div>
           ) : data?.issues?.length === 0 ? (
-            <div className="text-center py-20 text-gray-400 font-semibold">
+            <div className="text-center py-20 text-base-content/50 font-semibold">
               No issues found
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ staggerChildren: 0.1 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+              >
                 {data.issues.map((issue) => (
-                  <AllIssueCard key={issue._id} issue={issue} />
+                  <motion.div
+                    key={issue._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    viewport={{ once: true }}
+                  >
+                    <AllIssueCard issue={issue} />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Pagination */}
               <div className="flex justify-center mt-12 gap-2">

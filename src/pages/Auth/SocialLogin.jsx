@@ -27,10 +27,10 @@ const SocialLogin = () => {
   };
 
   return (
-    <div className="px-8 pb-8">
+    <div className="w-full">
       <button
         onClick={handleGoogleSignIn}
-        className="btn btn-outline w-full flex items-center gap-2 hover:bg-red-50 hover:border-red-500 hover:text-red-500 transition-all font-bold"
+        className="btn btn-outline w-full flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-red-50 hover:border-red-500 hover:text-red-500 transition-all font-bold dark:text-gray-200 dark:border-gray-600"
       >
         <FaGoogle /> Continue with Google
       </button>

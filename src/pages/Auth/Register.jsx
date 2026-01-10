@@ -32,7 +32,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-100 to-yellow-100 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-purple-100 via-pink-100 to-yellow-100 px-4 py-10">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-6 animate-fade-in">
         <h2 className="text-3xl font-bold text-center text-primary">
           Create Your Account

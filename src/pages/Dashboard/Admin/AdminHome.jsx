@@ -76,59 +76,59 @@ const AdminHome = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-12">
-        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
+        <div className="stat bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-100 dark:border-gray-700">
           <div className="stat-figure text-primary text-3xl">
             <FaClipboardList />
           </div>
-          <div className="stat-title">Total Issues</div>
+          <div className="stat-title dark:text-gray-400">Total Issues</div>
           <div className="stat-value text-primary">{stats.totalIssues}</div>
         </div>
 
-        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
+        <div className="stat bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-100 dark:border-gray-700">
           <div className="stat-figure text-success text-3xl">
             <FaCheckCircle />
           </div>
-          <div className="stat-title">Resolved</div>
+          <div className="stat-title dark:text-gray-400">Resolved</div>
           <div className="stat-value text-success">{stats.resolved}</div>
         </div>
 
-        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
+        <div className="stat bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-100 dark:border-gray-700">
           <div className="stat-figure text-warning text-3xl">
             <FaHourglassHalf />
           </div>
-          <div className="stat-title">Pending</div>
+          <div className="stat-title dark:text-gray-400">Pending</div>
           <div className="stat-value text-warning">{stats.pending}</div>
         </div>
 
-        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
+        <div className="stat bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-100 dark:border-gray-700">
           <div className="stat-figure text-error text-3xl">
             <FaTimesCircle />
           </div>
-          <div className="stat-title">Rejected</div>
+          <div className="stat-title dark:text-gray-400">Rejected</div>
           <div className="stat-value text-error">{stats.rejected}</div>
         </div>
 
-        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
+        <div className="stat bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-100 dark:border-gray-700">
           <div className="stat-figure text-secondary text-3xl">
             <FaUsers />
           </div>
-          <div className="stat-title">Users</div>
+          <div className="stat-title dark:text-gray-400">Users</div>
           <div className="stat-value text-secondary">{stats.totalUsers}</div>
         </div>
 
-        <div className="stat bg-white shadow-lg rounded-xl border border-gray-100">
+        <div className="stat bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-100 dark:border-gray-700">
           <div className="stat-figure text-yellow-500 text-3xl">
             <FaMoneyBillWave />
           </div>
-          <div className="stat-title">Total Payment</div>
+          <div className="stat-title dark:text-gray-400">Total Payment</div>
           <div className="stat-value text-yellow-500">{stats.revenue}</div>
         </div>
       </div>
 
       {/* Charts */}
       <div className=" mb-12">
-        <div className="card bg-base-100 shadow-xl p-6">
-          <h3 className="text-xl font-bold mb-4">Issue Status Distribution</h3>
+        <div className="card bg-base-100 dark:bg-gray-800 shadow-xl p-6">
+          <h3 className="text-xl font-bold mb-4 dark:text-gray-200">Issue Status Distribution</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -148,7 +148,9 @@ const AdminHome = () => {
                     />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#1F2937', color: '#fff' }}
+                />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -158,13 +160,13 @@ const AdminHome = () => {
 
       {/* Latest Issues, Payments, Users */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="card bg-base-100 shadow-xl p-4">
-          <h4 className="font-bold mb-2">Latest Issues</h4>
-          <ul className="text-sm">
+        <div className="card bg-base-100 dark:bg-gray-800 shadow-xl p-4">
+          <h4 className="font-bold mb-2 dark:text-gray-200">Latest Issues</h4>
+          <ul className="text-sm dark:text-gray-400">
             {statsData.latestIssues?.map((issue) => (
               <li
                 key={issue._id}
-                className="mb-1 border-b border-gray-200 pb-1"
+                className="mb-1 border-b border-gray-200 dark:border-gray-700 pb-1"
               >
                 {issue.title} ({issue.status})
               </li>
@@ -172,22 +174,22 @@ const AdminHome = () => {
           </ul>
         </div>
 
-        <div className="card bg-base-100 shadow-xl p-4">
-          <h4 className="font-bold mb-2">Latest Payments</h4>
-          <ul className="text-sm">
+        <div className="card bg-base-100 dark:bg-gray-800 shadow-xl p-4">
+          <h4 className="font-bold mb-2 dark:text-gray-200">Latest Payments</h4>
+          <ul className="text-sm dark:text-gray-400">
             {statsData.latestPayments?.map((p) => (
-              <li key={p._id} className="mb-1 border-b border-gray-200 pb-1">
+              <li key={p._id} className="mb-1 border-b border-gray-200 dark:border-gray-700 pb-1">
                 {p.email} — {p.amount} tk
               </li>
             )) || <p>No recent payments</p>}
           </ul>
         </div>
 
-        <div className="card bg-base-100 shadow-xl p-4">
-          <h4 className="font-bold mb-2">Latest Users</h4>
-          <ul className="text-sm">
+        <div className="card bg-base-100 dark:bg-gray-800 shadow-xl p-4">
+          <h4 className="font-bold mb-2 dark:text-gray-200">Latest Users</h4>
+          <ul className="text-sm dark:text-gray-400">
             {statsData.latestUsers?.map((u) => (
-              <li key={u._id} className="mb-1 border-b border-gray-200 pb-1">
+              <li key={u._id} className="mb-1 border-b border-gray-200 dark:border-gray-700 pb-1">
                 {u.name} ({u.email})
               </li>
             )) || <p>No recent users</p>}

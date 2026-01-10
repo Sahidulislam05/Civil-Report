@@ -3,6 +3,44 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-body {
+@theme {
+  --font-sans: "Poppins", sans-serif;
+}
+
+:root {
   font-family: "Poppins", sans-serif;
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #2563EB;
+  /* Blue-600 */
+  --color-secondary: #0D9488;
+  /* Teal-600 */
+  --color-accent: #F97316;
+  /* Orange-500 */
+  --color-neutral: #374151;
+  /* Gray-700 */
+  --color-base-100: #ffffff;
+  --color-base-200: #F3F4F6;
+  --color-base-300: #E5E7EB;
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  --color-primary: #3B82F6;
+  /* Blue-500 */
+  --color-secondary: #14B8A6;
+  /* Teal-500 */
+  --color-accent: #FB923C;
+  /* Orange-400 */
+  --color-neutral: #1F2937;
+  /* Gray-800 */
+  --color-base-100: #111827;
+  /* Gray-900 */
+  --color-base-200: #1F2937;
+  /* Gray-800 */
+  --color-base-300: #374151;
+  /* Gray-700 */
 }
