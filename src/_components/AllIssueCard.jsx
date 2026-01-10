@@ -68,7 +68,11 @@ export default function AllIssueCard({ issue }) {
   };
 
   return (
+<<<<<<< HEAD
     <div className="card bg-base-100 w-full hover:shadow-xl transition shadow-md rounded-xl overflow-hidden flex flex-col h-full">
+=======
+    <div className="card bg-base-100 shadow-md hover:shadow-xl transition rounded-xl overflow-hidden flex flex-col">
+>>>>>>> 28aefc2fca2dc0122df27786cbd21707887882f3
       {issue.image && (
         <figure>
           <img

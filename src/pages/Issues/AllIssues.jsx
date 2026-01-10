@@ -36,7 +36,11 @@ export default function AllIssues() {
   });
 
   return (
+<<<<<<< HEAD
     <div className="py-12 bg-base-200 min-h-screen mt-1">
+=======
+    <div className="py-12 bg-gray-50 min-h-screen mt-1 mx-auto">
+>>>>>>> 28aefc2fca2dc0122df27786cbd21707887882f3
       {/* Citizens Voice Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -140,12 +144,16 @@ export default function AllIssues() {
             </div>
           ) : (
             <>
+<<<<<<< HEAD
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ staggerChildren: 0.1 }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
               >
+=======
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-center">
+>>>>>>> 28aefc2fca2dc0122df27786cbd21707887882f3
                 {data.issues.map((issue) => (
                   <motion.div
                     key={issue._id}
